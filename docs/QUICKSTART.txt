@@ -1,0 +1,173 @@
+POCKETCLOUD QUICK START GUIDE
+==============================
+
+FOR RASPBERRY PI OS 64-BIT
+===========================
+
+OPTION 1: Automated Setup (Recommended)
+----------------------------------------
+bash setup.sh
+
+This will guide you through the complete setup process interactively.
+
+
+OPTION 2: Manual Steps
+----------------------
+
+STEP 1: Check Requirements
+--------------------------
+bash setup/check-requirements.sh
+
+This will verify your system meets all requirements.
+
+
+STEP 2: Install Node.js (if needed)
+-----------------------------------
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+
+Verify: node -v
+Expected: v18.x.x or higher
+
+
+STEP 3: Set Up USB Storage
+--------------------------
+sudo bash setup/setup-usb-storage.sh
+
+This will:
+- Detect your USB drive
+- Format it as ext4 (if needed)
+- Mount it at /mnt/pocketcloud
+- Configure auto-mount on boot
+
+
+STEP 4: Install PocketCloud
+---------------------------
+sudo bash setup/install.sh
+
+This will:
+- Create pocketcloud user
+- Install to /opt/pocketcloud
+- Configure USB storage
+- Install dependencies
+- Set up systemd service
+- Start PocketCloud
+
+
+STEP 5: Access PocketCloud
+--------------------------
+Open browser to:
+  http://localhost:3000           (on the Pi)
+  http://<pi-ip-address>:3000     (from another device)
+
+Create your account and start uploading files.
+
+
+THAT'S IT!
+==========
+
+PocketCloud is now:
+- Running on port 3000
+- Starting automatically on boot
+- Restarting automatically if it crashes
+- Storing data on your USB drive
+- Maintaining itself in the background
+
+
+USEFUL COMMANDS
+===============
+
+Check status:
+  sudo systemctl status pocketcloud
+
+View logs:
+  sudo journalctl -u pocketcloud -f
+
+Restart:
+  sudo systemctl restart pocketcloud
+
+Stop:
+  sudo systemctl stop pocketcloud
+
+Start:
+  sudo systemctl start pocketcloud
+
+
+UTILITY SCRIPTS
+===============
+
+System status check:
+  bash tools/system-status.sh
+
+Create backup:
+  sudo bash tools/backup-pocketcloud.sh
+
+Backup to external drive:
+  sudo bash tools/backup-pocketcloud.sh -d /media/backup-drive
+
+Individual setup steps:
+  bash setup/check-requirements.sh      # Check system requirements
+  sudo bash setup/setup-usb-storage.sh  # Set up USB storage
+  sudo bash setup/install.sh            # Install PocketCloud
+
+
+TROUBLESHOOTING
+===============
+
+Can't access from network?
+- Check firewall: sudo ufw allow 3000
+- Check service: sudo systemctl status pocketcloud
+
+Service won't start?
+- Check logs: sudo journalctl -u pocketcloud -n 50
+- Check port: sudo netstat -tlnp | grep 3000
+
+Upload fails?
+- Check disk space: df -h
+- Check file size (default limit: 1GB)
+
+Forgot password?
+- No recovery yet - you'll need to create new account
+- Your files are encrypted with your password
+
+
+NEXT STEPS
+==========
+
+1. Create your account
+2. Upload some files
+3. Access from other devices on your network
+4. Set up regular backups of /opt/pocketcloud/data
+5. Enjoy your personal cloud!
+
+
+SUPPORT
+=======
+
+Issues: Check logs with journalctl -u pocketcloud
+Updates: git pull && npm install --production && systemctl restart
+
+
+SECURITY NOTES
+==============
+
+- PocketCloud encrypts all files automatically
+- Your password is never stored
+- Files are encrypted at rest
+- Access only from trusted networks
+- Consider setting up HTTPS for internet access
+- Regular backups recommended
+
+
+UNINSTALL
+=========
+
+sudo systemctl stop pocketcloud
+sudo systemctl disable pocketcloud
+sudo rm /etc/systemd/system/pocketcloud.service
+sudo systemctl daemon-reload
+sudo rm -rf /opt/pocketcloud
+sudo userdel pocketcloud
+
+To also delete your files:
+sudo rm -rf /opt/pocketcloud  (if not already deleted)

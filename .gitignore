@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Runtime files
+*.log
+.env
+.pocketcloud-secret
+.pocketcloud-identity
+
+# Data directories
+data/
+storage/
+sessions/
+uploads/
+
+# Database files
+*.db
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Development artifacts (should not exist in production)
+test-*.js
+temp/
+test-streaming/
+
+# Backup files
+backups/
+*.backup
+*.bak
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/

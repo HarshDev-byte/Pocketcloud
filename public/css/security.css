@@ -1,0 +1,509 @@
+/* Security Page Styles */
+
+.security-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* Backup Reminder */
+.backup-reminder {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  position: relative;
+}
+
+.reminder-icon {
+  font-size: 24px;
+  margin-right: 16px;
+}
+
+.reminder-content {
+  flex: 1;
+}
+
+.reminder-message {
+  font-size: 14px;
+  color: #e4e7eb;
+  margin-bottom: 8px;
+}
+
+.reminder-dismiss {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.reminder-dismiss:hover {
+  color: #e4e7eb;
+}
+
+/* Backup Panel */
+.backup-panel {
+  background: linear-gradient(135deg, #1a2a1a 0%, #0f1419 100%);
+  border: 1px solid #2a4a2a;
+}
+
+.backup-info {
+  margin-bottom: 24px;
+}
+
+.backup-warning {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.warning-icon {
+  font-size: 20px;
+  margin-right: 12px;
+  margin-top: 2px;
+}
+
+.warning-text {
+  font-size: 14px;
+  color: #e4e7eb;
+  line-height: 1.5;
+}
+
+.backup-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #1a1f2e;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.stat-value {
+  font-size: 14px;
+  color: #e4e7eb;
+  font-weight: 500;
+}
+
+.backup-actions {
+  text-align: center;
+}
+
+.btn-large {
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.btn-icon {
+  font-size: 18px;
+}
+
+.backup-progress {
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #1a1f2e;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 4px;
+  animation: progress-pulse 2s ease-in-out infinite;
+}
+
+@keyframes progress-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.success-message {
+  color: #10b981;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Restore Panel */
+.restore-panel {
+  background: linear-gradient(135deg, #2a1a1a 0%, #0f1419 100%);
+  border: 1px solid #4a2a2a;
+}
+
+.restore-info {
+  margin-bottom: 24px;
+}
+
+.restore-warning {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  border-radius: 6px;
+}
+
+.restore-warning .warning-icon {
+  color: #ef4444;
+}
+
+/* File Upload Area */
+.file-upload-area {
+  border: 2px dashed #4a5568;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+}
+
+.file-upload-area:hover {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.file-upload-area.drag-over {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.upload-text {
+  font-size: 16px;
+  color: #e4e7eb;
+  line-height: 1.5;
+}
+
+.upload-loading {
+  font-size: 16px;
+  color: #667eea;
+  padding: 20px;
+}
+
+.upload-error {
+  text-align: center;
+  padding: 20px;
+}
+
+.error-icon {
+  font-size: 48px;
+  color: #ef4444;
+  margin-bottom: 16px;
+}
+
+.error-text {
+  font-size: 16px;
+  color: #ef4444;
+  margin-bottom: 16px;
+}
+
+/* Restore Preview */
+.restore-preview {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1a1f2e;
+}
+
+.preview-header h4 {
+  font-size: 18px;
+  color: #e4e7eb;
+  margin: 0;
+}
+
+.preview-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.detail-label {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #e4e7eb;
+  font-weight: 500;
+}
+
+/* Restore Confirmation */
+.restore-confirm {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.confirm-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.confirm-header h4 {
+  font-size: 18px;
+  color: #ef4444;
+  margin: 0;
+}
+
+.confirm-warning {
+  margin-bottom: 20px;
+}
+
+.confirm-warning p {
+  font-size: 14px;
+  color: #e4e7eb;
+  margin-bottom: 12px;
+}
+
+.confirm-warning ul {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-left: 20px;
+}
+
+.confirm-warning li {
+  margin-bottom: 4px;
+}
+
+.confirm-input {
+  margin-bottom: 20px;
+}
+
+.confirm-input label {
+  display: block;
+  font-size: 14px;
+  color: #e4e7eb;
+  margin-bottom: 8px;
+}
+
+.confirm-input input {
+  width: 100%;
+  padding: 12px;
+  background: #1a1f2e;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  color: #e4e7eb;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+}
+
+.confirm-input input:focus {
+  outline: none;
+  border-color: #ef4444;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.btn-danger:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #4a5568;
+  color: #e4e7eb;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #5a6578;
+}
+
+.restore-progress {
+  text-align: center;
+  font-size: 16px;
+  color: #667eea;
+  padding: 40px 20px;
+}
+
+.restore-error {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Storage Status Panel */
+.storage-status-panel {
+  grid-column: 1 / -1;
+}
+
+.storage-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+.status-label {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.status-value {
+  font-size: 14px;
+  color: #e4e7eb;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+}
+
+/* Support Boundaries Panel */
+.support-boundaries-panel {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #1a1a2a 0%, #0f1419 100%);
+  border: 1px solid #2a2a4a;
+}
+
+.support-summary {
+  text-align: center;
+}
+
+.support-summary p {
+  font-size: 14px;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.support-summary p strong {
+  color: #e4e7eb;
+}
+
+.support-links {
+  margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .security-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .security-grid {
+    gap: 16px;
+  }
+  
+  .storage-status-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .confirm-actions {
+    flex-direction: column;
+  }
+  
+  .btn-large {
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+}

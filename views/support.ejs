@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - PocketCloud</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/support.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h2>☁️ PocketCloud</h2>
+      </div>
+      <nav class="nav-menu">
+        <div class="nav-section">MAIN</div>
+        <a href="/files" class="nav-item">
+          <span class="icon">📊</span> Dashboard
+        </a>
+        <a href="/files" class="nav-item">
+          <span class="icon">📁</span> Files
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📤</span> Uploads
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📥</span> Downloads
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">👥</span> Shared
+        </a>
+        
+        <div class="nav-section">SYSTEM</div>
+        <a href="#" class="nav-item">
+          <span class="icon">👤</span> Users
+        </a>
+        <a href="/security" class="nav-item">
+          <span class="icon">🔒</span> Security
+        </a>
+        <a href="/support" class="nav-item active">
+          <span class="icon">❓</span> Support
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">⚙️</span> Settings
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">👤</div>
+          <div class="user-details">
+            <div class="user-name"><%= username %></div>
+            <div class="user-role">Admin</div>
+          </div>
+        </div>
+        <a href="/auth/logout" class="btn-logout">Logout</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div class="search-bar">
+          <input type="text" placeholder="Search...">
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn">🔔</button>
+          <button class="icon-btn">⚙️</button>
+        </div>
+      </header>
+
+      <div class="content-area">
+        <h1 class="page-title">Support</h1>
+        <p class="page-subtitle">Product boundaries, guarantees, and system information</p>
+
+        <!-- Support Statement -->
+        <div class="panel support-statement-panel">
+          <div class="panel-header">
+            <h3><%= supportStatement.title %></h3>
+            <span class="panel-info">Product Definition</span>
+          </div>
+          
+          <div class="support-statement">
+            <p class="statement-text"><%= supportStatement.statement %></p>
+          </div>
+          
+          <div class="support-grid">
+            <!-- Guarantees -->
+            <div class="support-section">
+              <h4 class="section-title">✓ What We Guarantee</h4>
+              <ul class="support-list guarantees">
+                <% supportStatement.guarantees.forEach(guarantee => { %>
+                <li><%= guarantee %></li>
+                <% }); %>
+              </ul>
+            </div>
+            
+            <!-- Limitations -->
+            <div class="support-section">
+              <h4 class="section-title">⚠ Limitations</h4>
+              <ul class="support-list limitations">
+                <% supportStatement.limitations.forEach(limitation => { %>
+                <li><%= limitation %></li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Environment Status -->
+        <div class="support-grid-2">
+          <!-- Supported Environment -->
+          <div class="panel environment-panel">
+            <div class="panel-header">
+              <h3>Supported Environment</h3>
+              <span class="panel-info <%= envValidation.supported ? 'status-supported' : 'status-unsupported' %>">
+                <%= envValidation.supported ? 'Supported' : 'Issues Detected' %>
+              </span>
+            </div>
+            
+            <div class="environment-details">
+              <div class="env-section">
+                <h5>Current System</h5>
+                <div class="env-item">
+                  <span class="env-label">OS:</span>
+                  <span class="env-value"><%= environment.os.distribution || environment.os.platform %></span>
+                </div>
+                <div class="env-item">
+                  <span class="env-label">Architecture:</span>
+                  <span class="env-value"><%= environment.os.arch %></span>
+                </div>
+                <div class="env-item">
+                  <span class="env-label">Storage:</span>
+                  <span class="env-value">
+                    <%= environment.storage.mounted ? environment.storage.filesystem : 'Not mounted' %>
+                  </span>
+                </div>
+                <div class="env-item">
+                  <span class="env-label">Node.js:</span>
+                  <span class="env-value"><%= environment.node.version %></span>
+                </div>
+              </div>
+              
+              <% if (!envValidation.supported || envValidation.issues.length > 0) { %>
+              <div class="env-section">
+                <h5>Issues</h5>
+                <% envValidation.issues.forEach(issue => { %>
+                <div class="env-issue <%= issue.severity %>">
+                  <div class="issue-message"><%= issue.message %></div>
+                  <div class="issue-action"><%= issue.action %></div>
+                </div>
+                <% }); %>
+              </div>
+              <% } %>
+              
+              <div class="env-section">
+                <h5>Requirements</h5>
+                <div class="env-requirements">
+                  <div class="req-item">
+                    <strong>OS:</strong> <%= supportStatement.supported.environment %>
+                  </div>
+                  <div class="req-item">
+                    <strong>Storage:</strong> <%= supportStatement.supported.filesystem %>
+                  </div>
+                  <div class="req-item">
+                    <strong>Usage:</strong> <%= supportStatement.supported.usage %>
+                  </div>
+                  <div class="req-item">
+                    <strong>Access:</strong> <%= supportStatement.supported.access %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Version Information -->
+          <div class="panel version-panel">
+            <div class="panel-header">
+              <h3>Version Information</h3>
+              <span class="panel-info">v<%= upgradeSafety.version %></span>
+            </div>
+            
+            <div class="version-details">
+              <div class="version-item">
+                <span class="version-label">PocketCloud:</span>
+                <span class="version-value">v<%= upgradeSafety.version %></span>
+              </div>
+              <div class="version-item">
+                <span class="version-label">Backup Format:</span>
+                <span class="version-value">v<%= upgradeSafety.backupFormatVersion %></span>
+              </div>
+              <div class="version-item">
+                <span class="version-label">System Identity:</span>
+                <span class="version-value"><%= identity.name %></span>
+              </div>
+              <% if (identity.setupCompleted) { %>
+              <div class="version-item">
+                <span class="version-label">Setup Date:</span>
+                <span class="version-value"><%= new Date(identity.setupDate).toLocaleDateString() %></span>
+              </div>
+              <% } %>
+            </div>
+            
+            <div class="upgrade-safety">
+              <h5>Upgrade Safety</h5>
+              <ul class="upgrade-rules">
+                <% upgradeSafety.upgradeRules.forEach(rule => { %>
+                <li><%= rule %></li>
+                <% }); %>
+              </ul>
+              <div class="upgrade-recommendation">
+                <strong>Recommendation:</strong> <%= upgradeSafety.recommendation %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unsupported Features -->
+        <div class="panel unsupported-panel">
+          <div class="panel-header">
+            <h3>Explicitly Unsupported</h3>
+            <span class="panel-info">Hard Boundaries</span>
+          </div>
+          
+          <div class="unsupported-grid">
+            <div class="unsupported-section">
+              <h5>Storage</h5>
+              <ul class="unsupported-list">
+                <% supportStatement.unsupported.STORAGE.forEach(item => { %>
+                <li><%= item %></li>
+                <% }); %>
+              </ul>
+            </div>
+            
+            <div class="unsupported-section">
+              <h5>Operating Systems</h5>
+              <ul class="unsupported-list">
+                <% supportStatement.unsupported.OS.forEach(item => { %>
+                <li><%= item %></li>
+                <% }); %>
+              </ul>
+            </div>
+            
+            <div class="unsupported-section">
+              <h5>Usage Patterns</h5>
+              <ul class="unsupported-list">
+                <% supportStatement.unsupported.USAGE.forEach(item => { %>
+                <li><%= item %></li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="boundary-note">
+            <p><strong>Note:</strong> PocketCloud will not attempt "best effort" compatibility with unsupported environments. 
+            The system will fail fast with clear explanations rather than operate in a degraded state.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- User Promise Footer -->
+      <footer class="support-footer">
+        <div class="user-promise">
+          <strong>PocketCloud Promise:</strong> We will always encrypt your files automatically on external USB storage, and will never send your data to the cloud.
+        </div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

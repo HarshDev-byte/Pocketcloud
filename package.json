@@ -1,0 +1,38 @@
+{
+  "name": "pocketcloud",
+  "version": "1.0.0",
+  "description": "PocketCloud encrypts your files automatically on external USB storage with zero cloud dependencies",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "status": "node scripts/status.js",
+    "test:crypto": "node scripts/test-encryption.js",
+    "test:streaming": "node scripts/test-streaming.js",
+    "test:failures": "node scripts/test-failure-scenarios.js",
+    "validate": "node scripts/validate-boundaries.js",
+    "migrate:encryption": "node scripts/migrate-encryption.js"
+  },
+  "keywords": [
+    "personal-cloud",
+    "raspberry-pi",
+    "offline-storage",
+    "encryption",
+    "zero-knowledge",
+    "usb-storage"
+  ],
+  "author": "PocketCloud Project",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "fs-extra": "^11.3.3",
+    "multer": "^2.0.2",
+    "sql.js": "^1.13.0",
+    "tar": "^7.5.7"
+  }
+}

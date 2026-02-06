@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - PocketCloud</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .setup-container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 40px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+    
+    .setup-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .setup-header h1 {
+      color: #4CAF50;
+      margin-bottom: 10px;
+    }
+    
+    .setup-header p {
+      color: #888;
+      font-size: 14px;
+    }
+    
+    .warning-box {
+      background: #2a1a1a;
+      border-left: 4px solid #ff6b6b;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .warning-box h3 {
+      color: #ff6b6b;
+      margin-top: 0;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .warning-box p {
+      color: #ccc;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    
+    .feature-box {
+      background: #1a2a1a;
+      border-left: 4px solid #4CAF50;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .feature-box h4 {
+      color: #4CAF50;
+      margin-top: 0;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .feature-box p {
+      color: #ccc;
+      line-height: 1.5;
+      margin: 0;
+      font-size: 14px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      color: #ccc;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #4CAF50;
+    }
+    
+    .acknowledgment {
+      background: #2a2a1a;
+      border: 2px solid #ff9800;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 4px;
+    }
+    
+    .acknowledgment label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      color: #fff;
+      line-height: 1.6;
+    }
+    
+    .acknowledgment input[type="checkbox"] {
+      margin-top: 4px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: #45a049;
+    }
+    
+    .btn-primary:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+    }
+    
+    .error {
+      background: #2a1a1a;
+      border: 1px solid #ff6b6b;
+      color: #ff6b6b;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    
+    /* Readiness Checklist Styles */
+    .readiness-checklist {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .checklist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 4px solid;
+    }
+    
+    .checklist-item.passed {
+      background: rgba(76, 175, 80, 0.1);
+      border-left-color: #4CAF50;
+    }
+    
+    .checklist-item.failed.critical {
+      background: rgba(255, 107, 107, 0.1);
+      border-left-color: #ff6b6b;
+    }
+    
+    .checklist-item.failed.warning {
+      background: rgba(255, 152, 0, 0.1);
+      border-left-color: #ff9800;
+    }
+    
+    .item-status {
+      font-size: 18px;
+      font-weight: bold;
+      min-width: 24px;
+      text-align: center;
+    }
+    
+    .checklist-item.passed .item-status {
+      color: #4CAF50;
+    }
+    
+    .checklist-item.failed.critical .item-status {
+      color: #ff6b6b;
+    }
+    
+    .checklist-item.failed.warning .item-status {
+      color: #ff9800;
+    }
+    
+    .item-content {
+      flex: 1;
+    }
+    
+    .item-label {
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    
+    .item-details {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 4px;
+    }
+    
+    .item-fix {
+      font-size: 13px;
+      color: #ff9800;
+      margin-top: 8px;
+    }
+    
+    .item-fix code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      color: #fff;
+    }
+    
+    .readiness-blocked {
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid #ff6b6b;
+      padding: 16px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    
+    .readiness-blocked p {
+      color: #ff6b6b;
+      margin: 8px 0;
+    }
+    
+    .readiness-ready {
+      background: rgba(76, 175, 80, 0.1);
+      border: 1px solid #4CAF50;
+      padding: 16px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    
+    .readiness-ready p {
+      color: #4CAF50;
+      margin: 8px 0;
+    }
+    
+    .setup-blocked {
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="setup-container">
+    <div class="setup-header">
+      <h1>🔒 PocketCloud</h1>
+      <p>Your files, encrypted automatically, no cloud required.</p>
+    </div>
+    
+    <div class="warning-box">
+      <h3>⚠️ Before you start</h3>
+      <p><strong>Your password cannot be recovered.</strong></p>
+      <p>If you forget it, your files are permanently lost. We cannot help you. This is by design.</p>
+    </div>
+    
+    <div class="feature-box">
+      <h4>✓ Files are encrypted automatically</h4>
+      <p>Every file you upload is encrypted before touching the disk. Even if someone steals your device, your files are unreadable.</p>
+    </div>
+    
+    <div class="feature-box">
+      <h4>✓ Works completely offline</h4>
+      <p>No internet required. No tracking. No cloud. Your files never leave your device.</p>
+    </div>
+    
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+    
+    <!-- System Readiness Checklist -->
+    <div class="readiness-checklist">
+      <h3 style="color: #fff; margin-bottom: 20px;">System Readiness</h3>
+      
+      <% if (readiness && readiness.checklist && readiness.checklist.items) { %>
+        <div class="checklist-items">
+          <% readiness.checklist.items.forEach(item => { %>
+            <div class="checklist-item <%= item.passed ? 'passed' : 'failed' %> <%= item.critical ? 'critical' : 'warning' %>">
+              <div class="item-status">
+                <%= item.passed ? '✓' : '✗' %>
+              </div>
+              <div class="item-content">
+                <div class="item-label"><%= item.label %></div>
+                <div class="item-details"><%= item.details %></div>
+                <% if (!item.passed && item.fixCommand) { %>
+                  <div class="item-fix">Fix: <code><%= item.fixCommand %></code></div>
+                <% } %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+        
+        <% if (!readiness.ready) { %>
+          <div class="readiness-blocked">
+            <p><strong>Setup is blocked until all critical issues are resolved.</strong></p>
+            <p>Please fix the issues above and refresh this page.</p>
+          </div>
+        <% } else { %>
+          <div class="readiness-ready">
+            <p><strong>✓ System is ready for setup!</strong></p>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+    
+    <% if (readiness && readiness.ready) { %>
+    <form method="POST" action="/setup" id="setup-form">
+      <h3 style="color: #fff; margin-top: 30px; margin-bottom: 20px;">Create Admin Account</h3>
+      
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autocomplete="off">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password (minimum 8 characters)</label>
+        <input type="password" id="password" name="password" required autocomplete="new-password">
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password">
+      </div>
+      
+      <div class="acknowledgment">
+        <label>
+          <input type="checkbox" id="acknowledge" name="acknowledged" value="true">
+          <span>I understand that if I forget my password, my files are permanently lost and cannot be recovered.</span>
+        </label>
+      </div>
+      
+      <button type="submit" class="btn-primary" id="create-btn" disabled>Create Account</button>
+    </form>
+    <% } else { %>
+    <div class="setup-blocked">
+      <p style="color: #ff6b6b; text-align: center; margin-top: 20px;">
+        <strong>Setup cannot continue until system issues are resolved.</strong>
+      </p>
+    </div>
+    <% } %>
+  </div>
+  
+  <script>
+    // Enable button only when checkbox is checked
+    document.getElementById('acknowledge').addEventListener('change', function(e) {
+      document.getElementById('create-btn').disabled = !e.target.checked;
+    });
+    
+    // Prevent form submission if not acknowledged
+    document.getElementById('setup-form').addEventListener('submit', function(e) {
+      if (!document.getElementById('acknowledge').checked) {
+        e.preventDefault();
+        alert('You must acknowledge the password responsibility warning.');
+      }
+    });
+  </script>
+</body>
+</html>

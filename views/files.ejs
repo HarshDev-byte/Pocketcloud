@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - PocketCloud</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container files">
+    <header class="dashboard-header">
+      <h1>☁️ PocketCloud</h1>
+      <div class="user-info">
+        <span>Welcome, <%= username %></span>
+        <a href="/auth/logout" class="btn btn-small">Logout</a>
+      </div>
+    </header>
+
+    <div class="storage-stats">
+      <p>Storage Used: <strong><%= stats.usedMB %> MB</strong></p>
+    </div>
+
+    <div class="upload-section">
+      <h2>Upload File</h2>
+      <form action="/files/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </form>
+    </div>
+
+    <div class="files-section">
+      <h2>My Files</h2>
+      <% if (files.length === 0) { %>
+        <p class="no-files">No files uploaded yet</p>
+      <% } else { %>
+        <table class="files-table">
+          <thead>
+            <tr>
+              <th>Filename</th>
+              <th>Size</th>
+              <th>Uploaded</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% files.forEach(file => { %>
+              <tr>
+                <td><%= file.filename %></td>
+                <td><%= (file.size / 1024).toFixed(2) %> KB</td>
+                <td><%= new Date(file.uploaded_at).toLocaleString() %></td>
+                <td class="actions">
+                  <a href="/files/download/<%= file.id %>" class="btn btn-small">Download</a>
+                  <form action="/files/delete/<%= file.id %>" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Delete this file?')">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

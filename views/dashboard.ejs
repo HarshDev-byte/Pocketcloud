@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - PocketCloud</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h2>☁️ PocketCloud</h2>
+      </div>
+      <nav class="nav-menu">
+        <div class="nav-section">MAIN</div>
+        <a href="/files" class="nav-item active">
+          <span class="icon">📊</span> Dashboard
+        </a>
+        <a href="/files" class="nav-item">
+          <span class="icon">📁</span> Files
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📤</span> Uploads
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📥</span> Downloads
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">👥</span> Shared
+        </a>
+        
+        <div class="nav-section">SYSTEM</div>
+        <% if (!isDay1User) { %>
+        <a href="#" class="nav-item">
+          <span class="icon">👤</span> Users
+        </a>
+        <% } %>
+        <a href="/security" class="nav-item">
+          <span class="icon">🔒</span> Security
+        </a>
+        <% if (!isDay1User) { %>
+        <a href="/support" class="nav-item">
+          <span class="icon">❓</span> Support
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">⚙️</span> Settings
+        </a>
+        <% } %>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">👤</div>
+          <div class="user-details">
+            <div class="user-name"><%= username %></div>
+            <div class="user-role">Admin</div>
+          </div>
+        </div>
+        <a href="/auth/logout" class="btn-logout">Logout</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div class="search-bar">
+          <input type="text" placeholder="Search files...">
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn">🔔</button>
+          <button class="icon-btn">⚙️</button>
+        </div>
+      </header>
+
+      <div class="content-area">
+        <!-- First Success Modal -->
+        <% if (showFirstSuccess) { %>
+        <div class="first-success-overlay">
+          <div class="first-success-modal">
+            <div class="success-icon">🎉</div>
+            <h2>Success! Your first file is encrypted and secure.</h2>
+            <div class="success-checks">
+              <div class="success-check">
+                <span class="check-icon">✓</span>
+                <span>File encrypted successfully</span>
+              </div>
+              <div class="success-check">
+                <span class="check-icon">✓</span>
+                <span>Stored on external USB drive</span>
+              </div>
+              <div class="success-check">
+                <span class="check-icon">✓</span>
+                <span>Ready for daily use</span>
+              </div>
+            </div>
+            <div class="success-actions">
+              <button onclick="uploadAnother()" class="btn-primary">Upload Another File</button>
+              <a href="/security" class="btn-secondary">Create Backup</a>
+            </div>
+            <button onclick="dismissFirstSuccess()" class="success-dismiss">Continue</button>
+          </div>
+        </div>
+        <% } %>
+        
+        <!-- Backup Nudge -->
+        <% if (showBackupNudge) { %>
+        <div class="backup-nudge">
+          <div class="nudge-icon">💾</div>
+          <div class="nudge-content">
+            <div class="nudge-message">Recommended next step: create your first backup.</div>
+            <div class="nudge-actions">
+              <a href="/security" class="btn-primary btn-small">Create Backup</a>
+              <button onclick="dismissBackupNudge()" class="btn-text">Not now</button>
+            </div>
+          </div>
+        </div>
+        <% } %>
+        
+        <!-- System Status Banner -->
+        <% if (systemStatus.state !== 'operational') { %>
+        <div class="system-status-banner status-<%= systemStatus.color %>">
+          <div class="status-icon">⚠️</div>
+          <div class="status-content">
+            <div class="status-message"><%= systemStatus.message %></div>
+            <% if (systemStatus.action) { %>
+            <div class="status-action">Action: <%= systemStatus.action %></div>
+            <% } %>
+          </div>
+        </div>
+        <% } %>
+        
+        <!-- Backup Reminder -->
+        <% if (backupReminder.show) { %>
+        <div class="backup-reminder">
+          <div class="reminder-icon">💾</div>
+          <div class="reminder-content">
+            <div class="reminder-message"><%= backupReminder.message %></div>
+            <a href="/security" class="btn-primary btn-small">Create Backup</a>
+          </div>
+          <button class="reminder-dismiss" onclick="this.parentElement.style.display='none'">&times;</button>
+        </div>
+        <% } %>
+        
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Manage, overview and system status</p>
+
+        <!-- Security Status Panel -->
+        <% if (!isDay1User) { %>
+        <div class="security-status-panel">
+          <div class="security-header">
+            <span class="security-icon">🔒</span>
+            <h3>Security Status</h3>
+          </div>
+          <div class="security-details">
+            <div class="security-item">
+              <span class="security-label">Encryption:</span>
+              <span class="security-value <%= securityStatus.encryptionEnabled ? 'enabled' : 'disabled' %>">
+                <%= securityStatus.encryptionEnabled ? '✓ Enabled' : '✗ Disabled' %>
+              </span>
+            </div>
+            <div class="security-item">
+              <span class="security-label">Files encrypted:</span>
+              <span class="security-value"><%= securityStatus.encryptedFileCount %> of <%= securityStatus.totalFileCount %></span>
+            </div>
+            <div class="security-item">
+              <span class="security-label">Last check:</span>
+              <span class="security-value">Just now</span>
+            </div>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Total Files</span>
+              <span class="stat-icon">📄</span>
+            </div>
+            <div class="stat-value"><%= totalFiles %></div>
+            <div class="stat-footer">
+              <span class="stat-change positive">+20% vs last week</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Storage Used</span>
+              <span class="stat-icon">💾</span>
+            </div>
+            <div class="stat-value"><%= stats.usedMB %> MB</div>
+            <div class="stat-footer">
+              <span class="stat-change">of unlimited</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Active Users</span>
+              <span class="stat-icon">👥</span>
+            </div>
+            <div class="stat-value">1</div>
+            <div class="stat-footer">
+              <span class="stat-change positive">+8% vs last week</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Downloads</span>
+              <span class="stat-icon">📥</span>
+            </div>
+            <div class="stat-value">0</div>
+            <div class="stat-footer">
+              <span class="stat-change negative">-5% vs last week</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="dashboard-grid">
+          <!-- Storage Overview -->
+          <div class="panel storage-panel">
+            <div class="panel-header">
+              <h3>Storage Overview</h3>
+              <% if (storageInfo.available) { %>
+              <span class="panel-info"><%= storageInfo.usedGB %> GB / <%= storageInfo.totalGB %> GB</span>
+              <% } else { %>
+              <span class="panel-info storage-unavailable">Unavailable</span>
+              <% } %>
+            </div>
+            <% if (storageInfo.available) { %>
+            <div class="storage-bar">
+              <div class="storage-fill" style="width: <%= storageInfo.percentUsed %>%"></div>
+            </div>
+            <div class="storage-details">
+              <div class="storage-info-row">
+                <span class="storage-label">Device:</span>
+                <span class="storage-value"><%= storageInfo.device %></span>
+              </div>
+              <div class="storage-info-row">
+                <span class="storage-label">Mount:</span>
+                <span class="storage-value storage-path"><%= storageInfo.mountPath %></span>
+              </div>
+              <div class="storage-info-row">
+                <span class="storage-label">Total:</span>
+                <span class="storage-value"><%= storageInfo.totalGB %> GB</span>
+              </div>
+              <div class="storage-info-row">
+                <span class="storage-label">Used:</span>
+                <span class="storage-value"><%= storageInfo.usedGB %> GB (<%= storageInfo.percentUsed %>%)</span>
+              </div>
+              <div class="storage-info-row">
+                <span class="storage-label">Free:</span>
+                <span class="storage-value"><%= storageInfo.freeGB %> GB</span>
+              </div>
+              <div class="storage-info-row">
+                <span class="storage-label">State:</span>
+                <span class="storage-value storage-state-<%= storageInfo.state %>">
+                  <% if (storageInfo.state === 'healthy') { %>✓ Healthy<% } %>
+                  <% if (storageInfo.state === 'almost-full') { %>⚠ Almost Full<% } %>
+                  <% if (storageInfo.state === 'full') { %>✗ Full<% } %>
+                </span>
+              </div>
+            </div>
+            <% } else { %>
+            <div class="storage-unavailable-message">
+              <h4><%= storageInfo.guidance.title %></h4>
+              <% if (storageInfo.guidance.expected) { %>
+              <div class="storage-expected">
+                <p><strong>Expected:</strong></p>
+                <ul>
+                  <% storageInfo.guidance.expected.forEach(item => { %>
+                  <li><%= item %></li>
+                  <% }); %>
+                </ul>
+              </div>
+              <% } %>
+              <% if (storageInfo.guidance.problem) { %>
+              <p class="storage-problem"><%= storageInfo.guidance.problem %></p>
+              <% } %>
+              <div class="storage-fix-steps">
+                <p><strong>Fix:</strong></p>
+                <% storageInfo.guidance.steps.forEach(step => { %>
+                <p class="storage-step"><%= step %></p>
+                <% }); %>
+              </div>
+            </div>
+            <% } %>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="panel quick-actions-panel">
+            <div class="panel-header">
+              <h3>Quick Actions</h3>
+            </div>
+            <div class="quick-actions">
+              <button class="action-btn" onclick="document.getElementById('fileInput').click()">
+                <span class="action-icon">📤</span>
+                <span class="action-label">Upload</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">📁</span>
+                <span class="action-label">New Folder</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">🔗</span>
+                <span class="action-label">Share</span>
+              </button>
+              <button class="action-btn">
+                <span class="action-icon">📥</span>
+                <span class="action-label">Download</span>
+              </button>
+            </div>
+            
+            <!-- Hidden upload form -->
+            <form action="/files/upload" method="POST" enctype="multipart/form-data" id="uploadForm" style="display: none;">
+              <input type="file" name="file" id="fileInput" onchange="document.getElementById('uploadForm').submit()">
+            </form>
+          </div>
+        </div>
+
+        <!-- Recent Files & System Status -->
+        <div class="dashboard-grid-2">
+          <!-- Recent Files -->
+          <div class="panel recent-files-panel">
+            <div class="panel-header">
+              <h3>Recent Files</h3>
+              <a href="/files" class="view-all">View All</a>
+            </div>
+            <div class="files-list">
+              <% if (recentFiles.length === 0) { %>
+                <div class="empty-state">
+                  <p>No files uploaded yet</p>
+                  <button class="btn-primary" onclick="document.getElementById('fileInput').click()">Upload Your First File</button>
+                </div>
+              <% } else { %>
+                <% recentFiles.forEach(file => { %>
+                  <div class="file-item">
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                      <div class="file-name"><%= file.filename %></div>
+                      <div class="file-meta"><%= file.formattedSize %> • <%= new Date(file.uploaded_at).toLocaleDateString() %></div>
+                    </div>
+                    <div class="file-actions">
+                      <a href="/files/download/<%= file.id %>" class="file-action-btn" title="Download">📥</a>
+                      <form action="/files/delete/<%= file.id %>" method="POST" style="display: inline;">
+                        <button type="submit" class="file-action-btn" title="Delete" onclick="return confirm('Delete this file?')">🗑️</button>
+                      </form>
+                    </div>
+                  </div>
+                <% }); %>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- System Status -->
+          <% if (!isDay1User) { %>
+          <div class="panel system-status-panel">
+            <div class="panel-header">
+              <h3>System Status</h3>
+              <span class="simulated-badge">Simulated</span>
+            </div>
+            <div class="system-stats">
+              <div class="system-stat">
+                <div class="system-stat-label">CPU</div>
+                <div class="system-stat-bar">
+                  <div class="system-stat-fill" style="width: 32%"></div>
+                </div>
+                <div class="system-stat-value">32%</div>
+              </div>
+              <div class="system-stat">
+                <div class="system-stat-label">Memory</div>
+                <div class="system-stat-bar">
+                  <div class="system-stat-fill" style="width: 45%"></div>
+                </div>
+                <div class="system-stat-value">4.2 / 16 GB</div>
+              </div>
+              <div class="system-stat">
+                <div class="system-stat-label">Temp</div>
+                <div class="system-stat-bar">
+                  <div class="system-stat-fill" style="width: 52%"></div>
+                </div>
+                <div class="system-stat-value">52°C</div>
+              </div>
+              <div class="system-stat">
+                <div class="system-stat-label">Network</div>
+                <div class="system-stat-bar">
+                  <div class="system-stat-fill" style="width: 78%"></div>
+                </div>
+                <div class="system-stat-value">7.8 Mb/s</div>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      
+      <!-- Footer with system identity and reassurance -->
+      <footer class="dashboard-footer">
+        <div class="footer-left">
+          <span class="footer-identity"><%= identity.name %></span>
+          <% if (systemStatus.state === 'operational') { %>
+          <span class="footer-reassurance">PocketCloud is running and protecting your files.</span>
+          <% } %>
+        </div>
+        <div class="footer-right">
+          <span class="footer-health">Last verified healthy: <%= timeSinceHealthCheck %></span>
+          <span class="footer-promise">Files encrypted locally, never in the cloud</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // First success modal functions
+    function uploadAnother() {
+      document.getElementById('fileInput').click();
+      dismissFirstSuccess();
+    }
+    
+    async function dismissFirstSuccess() {
+      try {
+        await fetch('/files/first-success-shown', { method: 'POST' });
+        document.querySelector('.first-success-overlay').style.display = 'none';
+      } catch (error) {
+        console.error('Failed to dismiss first success:', error);
+        document.querySelector('.first-success-overlay').style.display = 'none';
+      }
+    }
+    
+    // Backup nudge functions
+    async function dismissBackupNudge() {
+      try {
+        await fetch('/files/dismiss-backup-nudge', { method: 'POST' });
+        document.querySelector('.backup-nudge').style.display = 'none';
+      } catch (error) {
+        console.error('Failed to dismiss backup nudge:', error);
+        document.querySelector('.backup-nudge').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

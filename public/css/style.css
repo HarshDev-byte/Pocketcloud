@@ -1,0 +1,296 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Landing Page */
+.landing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.hero {
+  text-align: center;
+  background: white;
+  padding: 60px 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+  color: #667eea;
+}
+
+.tagline {
+  font-size: 1.5em;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.description {
+  color: #777;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+/* Auth Pages */
+.auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.auth-box {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-box h2 {
+  margin-bottom: 20px;
+  color: #667eea;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 20px;
+  color: #777;
+}
+
+.auth-link a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Buttons */
+.btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-secondary {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 0.9em;
+}
+
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+}
+
+/* Dashboard */
+.files {
+  background: white;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.dashboard-header h1 {
+  color: #667eea;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.storage-stats {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.upload-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.upload-section h2 {
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.upload-section form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.upload-section input[type="file"] {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+}
+
+.files-section h2 {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.no-files {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+}
+
+.files-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.files-table th,
+.files-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.files-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #555;
+}
+
+.files-table .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.error {
+  text-align: center;
+  color: white;
+  padding-top: 100px;
+}
+
+.error h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+.error .error {
+  background: #e74c3c;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .hero {
+    padding: 40px 20px;
+  }
+  
+  .hero h1 {
+    font-size: 2em;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .files-table {
+    font-size: 0.9em;
+  }
+  
+  .files-table .actions {
+    flex-direction: column;
+  }
+}

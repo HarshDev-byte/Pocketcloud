@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - PocketCloud</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/security.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h2>☁️ PocketCloud</h2>
+      </div>
+      <nav class="nav-menu">
+        <div class="nav-section">MAIN</div>
+        <a href="/files" class="nav-item">
+          <span class="icon">📊</span> Dashboard
+        </a>
+        <a href="/files" class="nav-item">
+          <span class="icon">📁</span> Files
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📤</span> Uploads
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">📥</span> Downloads
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">👥</span> Shared
+        </a>
+        
+        <div class="nav-section">SYSTEM</div>
+        <a href="#" class="nav-item">
+          <span class="icon">👤</span> Users
+        </a>
+        <a href="/security" class="nav-item active">
+          <span class="icon">🔒</span> Security
+        </a>
+        <a href="/support" class="nav-item">
+          <span class="icon">❓</span> Support
+        </a>
+        <a href="#" class="nav-item">
+          <span class="icon">⚙️</span> Settings
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">👤</div>
+          <div class="user-details">
+            <div class="user-name"><%= username %></div>
+            <div class="user-role">Admin</div>
+          </div>
+        </div>
+        <a href="/auth/logout" class="btn-logout">Logout</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div class="search-bar">
+          <input type="text" placeholder="Search...">
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn">🔔</button>
+          <button class="icon-btn">⚙️</button>
+        </div>
+      </header>
+
+      <div class="content-area">
+        <h1 class="page-title">Security</h1>
+        <p class="page-subtitle">Backup and restore your encrypted data</p>
+
+        <!-- Backup Reminder -->
+        <% if (backupReminder.show) { %>
+        <div class="backup-reminder">
+          <div class="reminder-icon">💾</div>
+          <div class="reminder-content">
+            <div class="reminder-message"><%= backupReminder.message %></div>
+            <button class="btn-primary btn-small" onclick="scrollToBackup()">Create Backup</button>
+          </div>
+          <button class="reminder-dismiss" onclick="dismissReminder()">&times;</button>
+        </div>
+        <% } %>
+
+        <!-- Security Grid -->
+        <div class="security-grid">
+          <!-- Backup Section -->
+          <div class="panel backup-panel">
+            <div class="panel-header">
+              <h3>Create Backup</h3>
+              <span class="panel-info">Encrypted data only</span>
+            </div>
+            
+            <div class="backup-info">
+              <div class="backup-warning">
+                <div class="warning-icon">⚠️</div>
+                <div class="warning-text">
+                  <strong>Important:</strong> You will need your password to restore this backup.
+                  Backups contain only encrypted data - no passwords are stored.
+                </div>
+              </div>
+              
+              <div class="backup-stats">
+                <div class="stat-row">
+                  <span class="stat-label">Files to backup:</span>
+                  <span class="stat-value"><%= backupStats.fileCount %> encrypted files</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Estimated size:</span>
+                  <span class="stat-value"><%= backupStats.formattedSize %></span>
+                </div>
+                <% if (identity.lastBackup) { %>
+                <div class="stat-row">
+                  <span class="stat-label">Last backup:</span>
+                  <span class="stat-value"><%= new Date(identity.lastBackup).toLocaleDateString() %></span>
+                </div>
+                <% } %>
+              </div>
+            </div>
+            
+            <div class="backup-actions">
+              <button id="createBackupBtn" class="btn-primary btn-large" onclick="createBackup()">
+                <span class="btn-icon">💾</span>
+                Create Encrypted Backup
+              </button>
+              <div id="backupProgress" class="backup-progress" style="display: none;">
+                <div class="progress-bar">
+                  <div class="progress-fill"></div>
+                </div>
+                <div class="progress-text">Creating backup...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Restore Section -->
+          <div class="panel restore-panel">
+            <div class="panel-header">
+              <h3>Restore from Backup</h3>
+              <span class="panel-info">Replaces all current data</span>
+            </div>
+            
+            <div class="restore-info">
+              <div class="restore-warning">
+                <div class="warning-icon">🚨</div>
+                <div class="warning-text">
+                  <strong>Danger:</strong> Restore will completely replace all current data.
+                  This action cannot be undone. Make sure you have a recent backup first.
+                </div>
+              </div>
+            </div>
+            
+            <div class="restore-actions">
+              <div class="file-upload-area" id="restoreUploadArea">
+                <input type="file" id="restoreFileInput" accept=".pcbackup" style="display: none;">
+                <div class="upload-prompt">
+                  <div class="upload-icon">📁</div>
+                  <div class="upload-text">
+                    <strong>Select .pcbackup file</strong>
+                    <br>or drag and drop here
+                  </div>
+                </div>
+              </div>
+              
+              <div id="restorePreview" class="restore-preview" style="display: none;">
+                <!-- Preview content will be inserted here -->
+              </div>
+              
+              <div id="restoreConfirm" class="restore-confirm" style="display: none;">
+                <!-- Confirmation form will be inserted here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Storage Status -->
+        <div class="panel storage-status-panel">
+          <div class="panel-header">
+            <h3>Storage Status</h3>
+            <span class="panel-info">Current system state</span>
+          </div>
+          
+          <div class="storage-status-grid">
+            <div class="status-item">
+              <div class="status-label">Storage Location:</div>
+              <div class="status-value"><%= storageInfo.mountPath %></div>
+            </div>
+            <div class="status-item">
+              <div class="status-label">Device:</div>
+              <div class="status-value"><%= storageInfo.device || 'External USB Drive' %></div>
+            </div>
+            <div class="status-item">
+              <div class="status-label">Free Space:</div>
+              <div class="status-value"><%= storageInfo.freeGB %> GB</div>
+            </div>
+            <div class="status-item">
+              <div class="status-label">System Identity:</div>
+              <div class="status-value"><%= identity.name %></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Support Statement -->
+        <div class="panel support-boundaries-panel">
+          <div class="panel-header">
+            <h3>Product Boundaries</h3>
+            <a href="/support" class="view-all">View Full Support Info</a>
+          </div>
+          
+          <div class="support-summary">
+            <p><strong>PocketCloud is designed for personal use on a single device.</strong></p>
+            <p>We guarantee encryption, data integrity, and safe failure. We do not provide cloud sync, collaboration, or data recovery if passwords are lost.</p>
+            
+            <div class="support-links">
+              <a href="/support" class="btn-secondary">View Support Boundaries</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Backup functionality
+    async function createBackup() {
+      const btn = document.getElementById('createBackupBtn');
+      const progress = document.getElementById('backupProgress');
+      
+      try {
+        btn.disabled = true;
+        btn.style.display = 'none';
+        progress.style.display = 'block';
+        
+        const response = await fetch('/security/backup', {
+          method: 'POST'
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.details || 'Backup creation failed');
+        }
+        
+        // Get filename from response headers
+        const contentDisposition = response.headers.get('Content-Disposition');
+        const filename = contentDisposition 
+          ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+          : 'pocketcloud-backup.pcbackup';
+        
+        // Download the backup
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        // Show success
+        progress.innerHTML = '<div class="success-message">✓ Backup created and downloaded</div>';
+        
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.style.display = 'block';
+          progress.style.display = 'none';
+          progress.innerHTML = '<div class="progress-bar"><div class="progress-fill"></div></div><div class="progress-text">Creating backup...</div>';
+        }, 3000);
+        
+      } catch (error) {
+        console.error('Backup error:', error);
+        progress.innerHTML = `<div class="error-message">✗ ${error.message}</div>`;
+        
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.style.display = 'block';
+          progress.style.display = 'none';
+          progress.innerHTML = '<div class="progress-bar"><div class="progress-fill"></div></div><div class="progress-text">Creating backup...</div>';
+        }, 5000);
+      }
+    }
+    
+    // Restore functionality
+    const restoreFileInput = document.getElementById('restoreFileInput');
+    const restoreUploadArea = document.getElementById('restoreUploadArea');
+    const restorePreview = document.getElementById('restorePreview');
+    const restoreConfirm = document.getElementById('restoreConfirm');
+    
+    // File upload handling
+    restoreUploadArea.addEventListener('click', () => {
+      restoreFileInput.click();
+    });
+    
+    restoreUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      restoreUploadArea.classList.add('drag-over');
+    });
+    
+    restoreUploadArea.addEventListener('dragleave', () => {
+      restoreUploadArea.classList.remove('drag-over');
+    });
+    
+    restoreUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      restoreUploadArea.classList.remove('drag-over');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].name.endsWith('.pcbackup')) {
+        handleRestoreFile(files[0]);
+      }
+    });
+    
+    restoreFileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleRestoreFile(e.target.files[0]);
+      }
+    });
+    
+    async function handleRestoreFile(file) {
+      try {
+        const formData = new FormData();
+        formData.append('backup', file);
+        
+        restoreUploadArea.innerHTML = '<div class="upload-loading">Analyzing backup...</div>';
+        
+        const response = await fetch('/security/restore/preview', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (!result.valid) {
+          throw new Error(result.details || 'Invalid backup file');
+        }
+        
+        showRestorePreview(result.preview, file);
+        
+      } catch (error) {
+        console.error('Restore preview error:', error);
+        restoreUploadArea.innerHTML = `
+          <div class="upload-error">
+            <div class="error-icon">✗</div>
+            <div class="error-text">${error.message}</div>
+            <button onclick="resetRestoreUpload()" class="btn-secondary btn-small">Try Again</button>
+          </div>
+        `;
+      }
+    }
+    
+    function showRestorePreview(preview, file) {
+      restoreUploadArea.style.display = 'none';
+      restorePreview.style.display = 'block';
+      
+      restorePreview.innerHTML = `
+        <div class="preview-header">
+          <h4>Backup Preview</h4>
+          <button onclick="resetRestoreUpload()" class="btn-secondary btn-small">Cancel</button>
+        </div>
+        <div class="preview-details">
+          <div class="detail-row">
+            <span class="detail-label">Created:</span>
+            <span class="detail-value">${preview.age}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Files:</span>
+            <span class="detail-value">${preview.fileCount} encrypted files</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Size:</span>
+            <span class="detail-value">${preview.formattedSize}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Version:</span>
+            <span class="detail-value">PocketCloud ${preview.pocketcloudVersion}</span>
+          </div>
+        </div>
+        <button onclick="showRestoreConfirm('${file.name}')" class="btn-danger btn-large">
+          Proceed with Restore
+        </button>
+      `;
+    }
+    
+    function showRestoreConfirm(filename) {
+      restorePreview.style.display = 'none';
+      restoreConfirm.style.display = 'block';
+      
+      restoreConfirm.innerHTML = `
+        <div class="confirm-header">
+          <h4>⚠️ Confirm Data Destruction</h4>
+        </div>
+        <div class="confirm-warning">
+          <p><strong>This will permanently delete all current data:</strong></p>
+          <ul>
+            <li>All encrypted files will be replaced</li>
+            <li>All user accounts will be replaced</li>
+            <li>System settings will be replaced</li>
+            <li>This action cannot be undone</li>
+          </ul>
+        </div>
+        <div class="confirm-input">
+          <label for="confirmText">Type <strong>DESTROY_CURRENT_DATA</strong> to confirm:</label>
+          <input type="text" id="confirmText" placeholder="DESTROY_CURRENT_DATA">
+        </div>
+        <div class="confirm-actions">
+          <button onclick="resetRestoreUpload()" class="btn-secondary">Cancel</button>
+          <button onclick="performRestore('${filename}')" class="btn-danger" id="confirmRestoreBtn" disabled>
+            Destroy Data and Restore
+          </button>
+        </div>
+      `;
+      
+      // Enable confirm button when text matches
+      document.getElementById('confirmText').addEventListener('input', (e) => {
+        const btn = document.getElementById('confirmRestoreBtn');
+        btn.disabled = e.target.value !== 'DESTROY_CURRENT_DATA';
+      });
+    }
+    
+    async function performRestore(filename) {
+      try {
+        const confirmText = document.getElementById('confirmText').value;
+        if (confirmText !== 'DESTROY_CURRENT_DATA') {
+          alert('Please type the confirmation text exactly');
+          return;
+        }
+        
+        const formData = new FormData();
+        formData.append('backup', restoreFileInput.files[0]);
+        formData.append('confirmation', confirmText);
+        
+        restoreConfirm.innerHTML = '<div class="restore-progress">Restoring data... This may take a few minutes.</div>';
+        
+        const response = await fetch('/security/restore/confirm', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (!result.success) {
+          throw new Error(result.details || 'Restore failed');
+        }
+        
+        // Redirect to login
+        window.location.href = result.redirectTo;
+        
+      } catch (error) {
+        console.error('Restore error:', error);
+        restoreConfirm.innerHTML = `
+          <div class="restore-error">
+            <div class="error-icon">✗</div>
+            <div class="error-text">Restore failed: ${error.message}</div>
+            <button onclick="resetRestoreUpload()" class="btn-secondary">Back to Upload</button>
+          </div>
+        `;
+      }
+    }
+    
+    function resetRestoreUpload() {
+      restoreUploadArea.style.display = 'block';
+      restorePreview.style.display = 'none';
+      restoreConfirm.style.display = 'none';
+      restoreFileInput.value = '';
+      
+      restoreUploadArea.innerHTML = `
+        <div class="upload-prompt">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">
+            <strong>Select .pcbackup file</strong>
+            <br>or drag and drop here
+          </div>
+        </div>
+      `;
+    }
+    
+    // Utility functions
+    function scrollToBackup() {
+      document.querySelector('.backup-panel').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function dismissReminder() {
+      document.querySelector('.backup-reminder').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
