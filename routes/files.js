@@ -12,6 +12,7 @@ const config = require('../config/config');
 const { ensureInside, isAllowedFileType } = require('../utils/security');
 const { encryptFile, decryptFile, encryptFileStream, decryptFileStream } = require('../services/cryptoService');
 const { CryptoIntegrityError } = require('../services/cryptoErrors');
+const { validateUploadedFile, handleCryptoIntegrityError, getCorruptedFiles, cleanupCorruptedFile } = require('../services/fileRecovery');
 const { getUserStatus } = require('../services/healthService');
 const { getIdentity, markSetupCompleted, updateHealthCheck, getTimeSinceHealthCheck } = require('../services/identityService');
 const { getStorageInfo, canUpload } = require('../services/storageService');
@@ -219,6 +220,21 @@ router.post('/upload', requireAuth, requireReady, uploadLimiter, upload.single('
     // Delete temp file after successful encryption
     await fs.remove(tempFilePath);
     
+    // Validate encrypted file integrity
+    try {
+      await validateUploadedFile(encryptedFilePath, req.file.size, true);
+      console.log(`✓ File validation passed: ${req.file.originalname}`);
+    } catch (validationError) {
+      console.error(`❌ File validation failed: ${req.file.originalname} - ${validationError.message}`);
+      
+      // Clean up corrupted encrypted file
+      if (await fs.pathExists(encryptedFilePath)) {
+        await fs.remove(encryptedFilePath);
+      }
+      
+      throw new Error(`Upload failed validation: ${validationError.message}`);
+    }
+    
     // Store metadata in database
     db.run(
       `INSERT INTO files (user_id, filename, filepath, size, mimetype, iv, auth_tag, encrypted) 
@@ -333,12 +349,23 @@ router.get('/download/:id', requireAuth, downloadLimiter, async (req, res, next)
         
         console.log(`✓ File decrypted and downloaded (streaming): ${file.filename}`);
       } catch (error) {
-        // If stream already started, client will see incomplete download
-        // This is acceptable - incomplete file is unusable anyway
+        // Handle crypto integrity errors gracefully
         if (error.name === 'CryptoIntegrityError') {
           console.error(`✗ Integrity check failed: ${file.filename}`);
-          // Response already started, can't send error page
-          // Client will see network error
+          
+          // Handle the error and mark file as corrupted
+          const errorInfo = await handleCryptoIntegrityError(file.id, req.session.userId, error);
+          
+          if (!res.headersSent) {
+            return res.status(422).render('file-corrupted', {
+              message: errorInfo.userMessage,
+              action: errorInfo.action,
+              technical: errorInfo.technicalMessage,
+              filename: file.filename,
+              fileId: file.id
+            });
+          }
+          // If headers already sent, client will see incomplete download
         } else {
           throw error;
         }
@@ -380,6 +407,33 @@ router.post('/first-success-shown', requireAuth, async (req, res) => {
 router.post('/dismiss-backup-nudge', requireAuth, async (req, res) => {
   await dismissBackupNudge(req.session.userId);
   res.json({ success: true });
+});
+
+// Get corrupted files for user
+router.get('/corrupted', requireAuth, async (req, res) => {
+  try {
+    const corruptedFiles = getCorruptedFiles(req.session.userId);
+    res.json({ corruptedFiles });
+  } catch (error) {
+    console.error('Error getting corrupted files:', error.message);
+    res.status(500).json({ error: 'Failed to get corrupted files' });
+  }
+});
+
+// Clean up corrupted file
+router.post('/cleanup-corrupted/:id', requireAuth, async (req, res) => {
+  try {
+    const result = await cleanupCorruptedFile(req.params.id, req.session.userId);
+    
+    if (result.success) {
+      res.json({ success: true, message: 'Corrupted file cleaned up successfully' });
+    } else {
+      res.status(400).json({ error: result.reason });
+    }
+  } catch (error) {
+    console.error('Error cleaning up corrupted file:', error.message);
+    res.status(500).json({ error: 'Failed to cleanup corrupted file' });
+  }
 });
 
 // Delete file

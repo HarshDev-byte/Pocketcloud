@@ -11,7 +11,9 @@
     "test:failures": "node scripts/test-failure-scenarios.js",
     "validate": "node scripts/validate-boundaries.js",
     "migrate:encryption": "node scripts/migrate-encryption.js",
-    "check:integrity": "node scripts/check-file-integrity.js"
+    "check:integrity": "node scripts/check-file-integrity.js",
+    "scan:corruption": "node scripts/scan-corruption.js",
+    "cleanup:corrupted": "node scripts/scan-corruption.js cleanup"
   },
   "keywords": [
     "personal-cloud",

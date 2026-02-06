@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Corrupted - PocketCloud</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .corruption-error-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+    }
+    
+    .corruption-error-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: shake 0.5s ease-in-out infinite alternate;
+    }
+    
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(5px); }
+    }
+    
+    .corruption-error-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    
+    .corruption-error-message {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+    
+    .corruption-details {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      text-align: left;
+    }
+    
+    .corruption-details h3 {
+      margin-top: 0;
+      color: #fff;
+    }
+    
+    .corruption-details p {
+      margin: 0.5rem 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .corruption-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    
+    .btn-recovery {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-recovery:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .btn-recovery.primary {
+      background: rgba(255, 255, 255, 0.9);
+      color: #ee5a24;
+    }
+    
+    .btn-recovery.primary:hover {
+      background: white;
+    }
+    
+    .recovery-steps {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1.5rem;
+      border-radius: 8px;
+      max-width: 600px;
+      text-align: left;
+    }
+    
+    .recovery-steps h3 {
+      margin-top: 0;
+      color: #fff;
+    }
+    
+    .recovery-steps ol {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+    
+    .recovery-steps li {
+      margin: 0.5rem 0;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="corruption-error-container">
+    <div class="corruption-error-icon">⚠️</div>
+    <h1 class="corruption-error-title">File Corrupted</h1>
+    <p class="corruption-error-message">
+      This file appears to be corrupted and cannot be downloaded safely. 
+      The file failed integrity verification during decryption.
+    </p>
+    
+    <div class="corruption-details">
+      <h3>Technical Details</h3>
+      <p><strong>File:</strong> <%= filename || 'Unknown' %></p>
+      <p><strong>Error:</strong> <%= technical || 'Decryption integrity check failed' %></p>
+      <p><strong>Cause:</strong> File corruption during storage or transmission</p>
+      <p><strong>Security:</strong> File has been marked as corrupted for safety</p>
+    </div>
+    
+    <div class="corruption-actions">
+      <button onclick="cleanupFile()" class="btn-recovery primary">Remove Corrupted File</button>
+      <a href="/files" class="btn-recovery">Back to Files</a>
+      <a href="/security" class="btn-recovery">Create Backup</a>
+    </div>
+    
+    <div class="recovery-steps">
+      <h3>Recovery Steps</h3>
+      <ol>
+        <li><strong>Remove corrupted file</strong> - Click "Remove Corrupted File" above</li>
+        <li><strong>Check USB drive health</strong> - Run: <code>sudo fsck /dev/sda1</code></li>
+        <li><strong>Re-upload original file</strong> - Upload the file again from your device</li>
+        <li><strong>Ensure stable connection</strong> - Use quality USB cable and don't move Pi during uploads</li>
+        <li><strong>Create backup</strong> - Regular backups prevent data loss</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    async function cleanupFile() {
+      const fileId = '<%= fileId || "" %>';
+      
+      if (!fileId) {
+        alert('Cannot identify file to clean up');
+        return;
+      }
+      
+      if (!confirm('Are you sure you want to remove this corrupted file? This action cannot be undone.')) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/files/cleanup-corrupted/${fileId}`, {
+          method: 'POST'
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('Corrupted file removed successfully');
+          window.location.href = '/files';
+        } else {
+          alert('Failed to remove file: ' + result.error);
+        }
+      } catch (error) {
+        alert('Error removing file: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
