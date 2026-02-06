@@ -11,7 +11,7 @@ const { requireAuth } = require('../middleware/auth');
 const backupService = require('../services/backupService');
 const restoreService = require('../services/restoreService');
 const { getStorageInfo } = require('../services/storageService');
-const { getSystemIdentity } = require('../services/identityService');
+const { getIdentity } = require('../services/identityService');
 
 const router = express.Router();
 
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
   try {
     const [storageInfo, identity, backupStats, backupReminder] = await Promise.all([
       getStorageInfo(),
-      getSystemIdentity(),
+      getIdentity(),
       backupService.getBackupStats(),
       backupService.shouldShowBackupReminder()
     ]);

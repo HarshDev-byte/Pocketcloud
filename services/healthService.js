@@ -8,6 +8,7 @@ const path = require('path');
 const config = require('../config/config');
 const { getDatabase } = require('../config/database');
 const { getStorageHealth } = require('./storageService');
+const usbMountService = require('./usbMountService');
 
 /**
  * Check if database is reachable and functional
@@ -27,18 +28,40 @@ function checkDatabase() {
  * Check if storage is available and healthy
  */
 async function checkStorage() {
+  // First check if USB is mounted
+  const mountStatus = usbMountService.getMountStatus();
+  
+  if (!mountStatus.mounted) {
+    return { 
+      healthy: false, 
+      reason: 'USB drive not mounted',
+      mounted: false
+    };
+  }
+  
   const health = await getStorageHealth();
   
   if (!health.healthy) {
-    return { healthy: false, reason: health.reason };
+    return { 
+      healthy: false, 
+      reason: health.reason,
+      mounted: true
+    };
   }
   
   // Warning if almost full, but still healthy
   if (health.warning) {
-    return { healthy: true, warning: health.warning };
+    return { 
+      healthy: true, 
+      warning: health.warning,
+      mounted: true
+    };
   }
   
-  return { healthy: true };
+  return { 
+    healthy: true,
+    mounted: true
+  };
 }
 
 /**
@@ -75,6 +98,10 @@ async function getHealth() {
       database: checks.database.healthy,
       storage: checks.storage.healthy,
       encryption: checks.encryption.healthy
+    },
+    storage: {
+      mounted: checks.storage.mounted || false,
+      healthy: checks.storage.healthy
     },
     // Include warnings
     ...(checks.storage.warning ? { warnings: [checks.storage.warning] } : {}),

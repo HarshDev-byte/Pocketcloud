@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - PocketCloud</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .storage-error-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .storage-error-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .storage-error-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    
+    .storage-error-message {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      max-width: 600px;
+    }
+    
+    .storage-error-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .btn-reconnect {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-reconnect:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .storage-status {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .loading-spinner {
+      display: none;
+      margin: 1rem auto;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="storage-error-container">
+    <div class="storage-error-icon">🔌</div>
+    <h1 class="storage-error-title">Storage Disconnected</h1>
+    <p class="storage-error-message">
+      Your USB drive has been disconnected. PocketCloud needs external storage to protect your files.
+    </p>
+    
+    <div class="storage-error-actions">
+      <button onclick="checkStorage()" class="btn-reconnect">Check Connection</button>
+      <a href="/files" class="btn-reconnect">Retry</a>
+      <a href="/auth/logout" class="btn-reconnect">Logout</a>
+    </div>
+    
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    
+    <div class="storage-status">
+      <strong>What to do:</strong><br>
+      1. Connect your USB drive to the Raspberry Pi<br>
+      2. Wait 10 seconds for it to mount<br>
+      3. Click "Check Connection" or refresh this page<br>
+      <br>
+      <strong>Expected:</strong> USB drive mounted at /mnt/pocketcloud
+    </div>
+  </div>
+
+  <script>
+    let checkingStorage = false;
+    
+    async function checkStorage() {
+      if (checkingStorage) return;
+      
+      checkingStorage = true;
+      const spinner = document.getElementById('loadingSpinner');
+      const button = document.querySelector('.btn-reconnect');
+      
+      spinner.style.display = 'block';
+      button.textContent = 'Checking...';
+      button.disabled = true;
+      
+      try {
+        // Try to access the health endpoint
+        const response = await fetch('/health');
+        const health = await response.json();
+        
+        if (health.storage && health.storage.mounted) {
+          // Storage is back online
+          window.location.href = '/files';
+        } else {
+          // Still disconnected
+          setTimeout(() => {
+            spinner.style.display = 'none';
+            button.textContent = 'Check Connection';
+            button.disabled = false;
+            checkingStorage = false;
+          }, 2000);
+        }
+      } catch (error) {
+        // Server might be down or storage still disconnected
+        setTimeout(() => {
+          spinner.style.display = 'none';
+          button.textContent = 'Check Connection';
+          button.disabled = false;
+          checkingStorage = false;
+        }, 2000);
+      }
+    }
+    
+    // Auto-check every 10 seconds
+    setInterval(async () => {
+      if (!checkingStorage) {
+        try {
+          const response = await fetch('/health');
+          const health = await response.json();
+          
+          if (health.storage && health.storage.mounted) {
+            window.location.href = '/files';
+          }
+        } catch (error) {
+          // Ignore errors during auto-check
+        }
+      }
+    }, 10000);
+  </script>
+</body>
+</html>

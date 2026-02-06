@@ -4,6 +4,7 @@ const path = require('path');
 const { initDatabase } = require('./config/database');
 const config = require('./config/config');
 const { requireSetup } = require('./middleware/setup');
+const { handleStorageError } = require('./middleware/storageError');
 const { startupCleanup } = require('./scripts/startup-cleanup');
 const { getHealth } = require('./services/healthService');
 const usbMountService = require('./services/usbMountService');
@@ -71,6 +72,9 @@ app.use('/support', require('./routes/support'));
 app.use((req, res) => {
   res.status(404).render('error', { message: 'Page not found' });
 });
+
+// Storage error handler (before general error handler)
+app.use(handleStorageError);
 
 // Error handler
 app.use((err, req, res, next) => {
