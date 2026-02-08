@@ -295,7 +295,10 @@ router.get('/download/:id', requireAuth, downloadLimiter, async (req, res, next)
     const result = db.exec('SELECT * FROM files WHERE id = ? AND user_id = ?', [req.params.id, req.session.userId]);
     
     if (result.length === 0 || result[0].values.length === 0) {
-      return res.status(404).send('File not found');
+      return res.status(404).render('error', {
+        message: 'File not found',
+        action: 'The file may have been deleted or you may not have permission to access it.'
+      });
     }
     
     const file = {
@@ -316,16 +319,33 @@ router.get('/download/:id', requireAuth, downloadLimiter, async (req, res, next)
     ensureInside(userPath, filePath);
     
     if (!fs.existsSync(filePath)) {
-      return res.status(404).send('File not found on disk');
+      return res.status(404).render('error', {
+        message: 'File not found on storage',
+        action: 'The file may have been moved or the storage drive may be disconnected.'
+      });
     }
     
     // If file is encrypted, decrypt it using streaming
     if (file.encrypted) {
+      // Enhanced session validation with helpful error messages
       if (!req.session.password || !req.session.encryptionSalt) {
-        return res.status(500).send('Decryption not available. Please log out and log back in.');
+        console.warn(`❌ Decryption failed for ${file.filename}: Missing encryption keys in session`);
+        console.warn(`   User: ${req.session.username || 'unknown'}`);
+        console.warn(`   Session ID: ${req.sessionID}`);
+        console.warn(`   Has password: ${!!req.session.password}`);
+        console.warn(`   Has salt: ${!!req.session.encryptionSalt}`);
+        
+        return res.status(401).render('error', {
+          message: 'Cannot decrypt file - encryption keys not available',
+          action: 'Please log out and log back in with your password to restore encryption keys.',
+          technical: 'Session missing encryption credentials. This can happen if you logged in from a different device or your session expired.',
+          showLoginButton: true
+        });
       }
       
       console.log(`🔓 Decrypting file (streaming): ${file.filename}`);
+      console.log(`   User: ${req.session.username}`);
+      console.log(`   Device: ${req.get('User-Agent')?.substring(0, 50)}...`);
       
       // Set response headers BEFORE streaming starts
       res.setHeader('Content-Disposition', `attachment; filename="${file.filename}"`);
@@ -347,7 +367,7 @@ router.get('/download/:id', requireAuth, downloadLimiter, async (req, res, next)
           file.authTag
         );
         
-        console.log(`✓ File decrypted and downloaded (streaming): ${file.filename}`);
+        console.log(`✓ File decrypted and downloaded (streaming): ${file.filename} by ${req.session.username}`);
       } catch (error) {
         // Handle crypto integrity errors gracefully
         if (error.name === 'CryptoIntegrityError') {
@@ -372,10 +392,14 @@ router.get('/download/:id', requireAuth, downloadLimiter, async (req, res, next)
       }
     } else {
       // Legacy: Unencrypted file (for backward compatibility)
+      console.log(`📁 Downloading unencrypted file: ${file.filename} by ${req.session.username}`);
       res.download(filePath, file.filename);
     }
   } catch (error) {
     console.error('Download error:', error.message);
+    console.error(`   File ID: ${req.params.id}`);
+    console.error(`   User: ${req.session.username || 'unknown'}`);
+    console.error(`   Session ID: ${req.sessionID}`);
     
     // Use failure handler for proper error messaging
     await DownloadFailureHandler.handleDownloadFailure(filePath, error);
@@ -384,7 +408,9 @@ router.get('/download/:id', requireAuth, downloadLimiter, async (req, res, next)
     if (!res.headersSent) {
       return res.status(500).render('error', {
         message: failureMessage.message,
-        action: failureMessage.action
+        action: failureMessage.action,
+        technical: `Error: ${error.message}`,
+        showLoginButton: true
       });
     }
     // If headers already sent, client will see incomplete download
@@ -407,6 +433,74 @@ router.post('/first-success-shown', requireAuth, async (req, res) => {
 router.post('/dismiss-backup-nudge', requireAuth, async (req, res) => {
   await dismissBackupNudge(req.session.userId);
   res.json({ success: true });
+});
+
+// Session diagnostics endpoint
+router.get('/session-info', requireAuth, (req, res) => {
+  const sessionInfo = {
+    userId: req.session.userId,
+    username: req.session.username,
+    sessionId: req.sessionID,
+    hasPassword: !!req.session.password,
+    hasEncryptionSalt: !!req.session.encryptionSalt,
+    encryptionReady: !!(req.session.password && req.session.encryptionSalt),
+    userAgent: req.get('User-Agent'),
+    ip: req.ip,
+    timestamp: new Date().toISOString()
+  };
+  
+  console.log(`📊 Session diagnostics requested by ${req.session.username}:`);
+  console.log(`   Session ID: ${sessionInfo.sessionId}`);
+  console.log(`   Encryption ready: ${sessionInfo.encryptionReady}`);
+  console.log(`   User-Agent: ${sessionInfo.userAgent?.substring(0, 100)}`);
+  
+  res.json(sessionInfo);
+});
+
+// Cross-device access test endpoint
+router.get('/test-access', requireAuth, async (req, res) => {
+  try {
+    const db = getDatabase();
+    
+    // Get user's file count
+    const result = db.exec('SELECT COUNT(*) as count FROM files WHERE user_id = ?', [req.session.userId]);
+    const fileCount = result[0]?.values[0]?.[0] || 0;
+    
+    // Check encryption readiness
+    const encryptionReady = !!(req.session.password && req.session.encryptionSalt);
+    
+    const testResult = {
+      success: true,
+      username: req.session.username,
+      fileCount: fileCount,
+      encryptionReady: encryptionReady,
+      canUpload: encryptionReady,
+      canDownload: encryptionReady,
+      message: encryptionReady 
+        ? `✅ Cross-device access working! You can upload and download files.`
+        : `❌ Encryption keys missing. Please log out and log back in.`,
+      timestamp: new Date().toISOString()
+    };
+    
+    console.log(`🧪 Access test for ${req.session.username}: ${testResult.message}`);
+    
+    res.json(testResult);
+  } catch (error) {
+    console.error('Access test error:', error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: '❌ Access test failed. Please check your connection and try again.'
+    });
+  }
+});
+
+// Cross-device test page
+router.get('/cross-device-test', requireAuth, (req, res) => {
+  res.render('cross-device-test', {
+    title: 'Cross-Device Test',
+    username: req.session.username
+  });
 });
 
 // Get corrupted files for user
