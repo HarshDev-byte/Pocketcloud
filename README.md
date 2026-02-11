@@ -44,26 +44,35 @@ A production-grade, offline-first personal cloud storage system designed for Ras
 
 ## ⚡ Quick Start
 
-### **🎯 New User (Recommended)**
+### **🚀 One Command to Rule Them All**
 ```bash
-# One command setup with guided assistance
+# Single command to install, setup, and run everything
+./start-pocketcloud.sh
+```
+**That's it!** This command will:
+- ✅ Check system requirements
+- ✅ Install all dependencies  
+- ✅ Run setup if needed
+- ✅ Start PocketCloud
+- ✅ Show access URLs
+
+**Access your cloud:** `http://localhost:3000`
+
+### **🎯 Alternative Setup Methods**
+
+**Interactive Setup:**
+```bash
 bash setup.sh
 # Choose option 1: Interactive Setup
 ```
 
-### **⚡ Experienced User**
+**Manual Control:**
 ```bash
-# Automated setup for power users
-bash setup.sh --quick
-
-# Or manual control:
 bash setup/check-requirements.sh        # 1. Verify system
 sudo bash setup/setup-usb-storage.sh    # 2. Configure USB storage  
 sudo bash setup/install.sh              # 3. Install PocketCloud
 bash tools/system-status.sh             # 4. Verify installation
 ```
-
-**Access your cloud:** `http://localhost:3000`
 
 ---
 
@@ -255,6 +264,21 @@ sudo fsck /dev/sda1
 ---
 
 ## 🔧 Management Tools
+
+### **One-Command Management**
+```bash
+# Start PocketCloud (installs, sets up, and runs everything)
+./start-pocketcloud.sh
+
+# Show real-time logs
+./start-pocketcloud.sh --logs
+
+# Stop PocketCloud
+./start-pocketcloud.sh --stop
+
+# Check if running
+./start-pocketcloud.sh --status
+```
 
 ### **System Monitoring**
 ```bash
