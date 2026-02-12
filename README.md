@@ -4,13 +4,13 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
-[![Platform](https://img.shields.io/badge/Platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
+[![Platform](https://img.shields.io/badge/Platform-Raspberry%20Pi%20%7C%20Windows-red.svg)](https://www.raspberrypi.org/)
 [![Security](https://img.shields.io/badge/Encryption-AES--256--GCM-blue.svg)](https://en.wikipedia.org/wiki/Galois/Counter_Mode)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](#)
 
 > **PocketCloud encrypts your files automatically on external USB storage with zero cloud dependencies.**
 
-A production-grade, offline-first personal cloud storage system designed for Raspberry Pi that puts **privacy**, **security**, and **ownership** back in your hands.
+A production-grade, offline-first personal cloud storage system designed for Raspberry Pi and Windows that puts **privacy**, **security**, and **ownership** back in your hands.
 
 ---
 
@@ -44,17 +44,19 @@ A production-grade, offline-first personal cloud storage system designed for Ras
 
 ## ⚡ Quick Start
 
-### **🚀 One Command to Rule Them All**
+### **🚀 Raspberry Pi - One Command to Rule Them All**
 ```bash
 # Single command to install, setup, and run everything
 ./start-pocketcloud.sh
 ```
-**That's it!** This command will:
-- ✅ Check system requirements
-- ✅ Install all dependencies  
-- ✅ Run setup if needed
-- ✅ Start PocketCloud
-- ✅ Show access URLs
+
+### **🪟 Windows 10/11 - Simple Setup**
+```cmd
+# Download, setup, and run on Windows
+windows-setup.bat
+start-pocketcloud-windows.bat E:
+```
+Replace `E:` with your USB drive letter.
 
 **Access your cloud:** `http://localhost:3000`
 
@@ -190,7 +192,7 @@ sudo fsck /dev/sda1
 
 ## 🛠️ System Requirements
 
-### **Hardware Requirements**
+### **Raspberry Pi Requirements**
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
 | **Raspberry Pi** | Pi 4 Model B (4GB) | Pi 4 Model B (8GB) |
@@ -199,11 +201,20 @@ sudo fsck /dev/sda1
 | **Power Supply** | Official Pi Adapter | Official Pi Adapter |
 | **Network** | Wi-Fi or Ethernet | Gigabit Ethernet |
 
+### **Windows Requirements**
+| Component | Minimum | Recommended |
+|-----------|---------|-------------|
+| **OS** | Windows 10 (64-bit) | Windows 11 (64-bit) |
+| **RAM** | 4GB | 8GB+ |
+| **USB Storage** | 32GB USB 3.0 | 128GB+ SSD via USB 3.0 |
+| **Node.js** | 18.0.0+ | 20 LTS |
+| **Network** | Wi-Fi or Ethernet | Gigabit Ethernet |
+
 ### **Software Requirements**
-- **OS:** Raspberry Pi OS 64-bit (Bookworm)
+- **OS:** Raspberry Pi OS 64-bit (Bookworm) or Windows 10/11
 - **Node.js:** 18.0.0+ (20 LTS recommended)
-- **Storage:** External USB drive mounted at `/mnt/pocketcloud`
-- **Filesystem:** ext4 (recommended) or ext3
+- **Storage:** External USB drive mounted appropriately
+- **Filesystem:** ext4 (Pi) or NTFS (Windows)
 
 ### **Network Requirements**
 - **Setup:** Internet connection (for initial software download)
@@ -216,6 +227,7 @@ sudo fsck /dev/sda1
 
 ### **📖 Setup Guides**
 - **[Complete Setup Guide 2026](docs/COMPLETE_SETUP_GUIDE_2026.md)** - Ultra-detailed walkthrough with shopping list
+- **[Windows Setup Guide](WINDOWS_SETUP_GUIDE.md)** - Complete Windows 10/11 setup instructions
 - **[Pre-Setup Checklist](docs/PRE_SETUP_CHECKLIST.md)** - What to buy and prepare (printable)
 - **[Visual Setup Guide](docs/VISUAL_SETUP_GUIDE.md)** - ASCII diagrams and visual instructions
 - **[Quick Start](docs/QUICKSTART.txt)** - Brief instructions for experienced users
