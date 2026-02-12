@@ -3,7 +3,7 @@
  * Blocks operations when system is not ready
  */
 
-const { isReady } = require('../services/healthService');
+const { isReady } = require('../services/monitoring/healthService');
 
 /**
  * Middleware to check system readiness before operations

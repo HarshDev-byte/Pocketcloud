@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const mm = require('music-metadata');
-const db = require('../config/database');
+const db = require('../../config/database');
 
 class MusicPlayerService {
   constructor() {

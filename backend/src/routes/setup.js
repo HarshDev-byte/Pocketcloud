@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { getDatabase, saveDatabase } = require('../config/database');
-const { generateSalt } = require('../services/cryptoService');
+const { generateSalt } = require('../services/core/cryptoService');
 const { redirectIfSetupComplete } = require('../middleware/setup');
-const { getSetupReadiness } = require('../services/setupVerification');
+const { getSetupReadiness } = require('../services/core/setupVerification');
 
 // Password validation
 function validatePassword(password) {

@@ -10,15 +10,15 @@ const { getUserStoragePath, getStorageStats, formatFileSize } = require('../conf
 const { getDatabase, saveDatabase } = require('../config/database');
 const config = require('../config/config');
 const { ensureInside, isAllowedFileType } = require('../utils/security');
-const { encryptFile, decryptFile, encryptFileStream, decryptFileStream } = require('../services/cryptoService');
-const { CryptoIntegrityError } = require('../services/cryptoErrors');
-const { validateUploadedFile, handleCryptoIntegrityError, getCorruptedFiles, cleanupCorruptedFile } = require('../services/fileRecovery');
-const { getUserStatus } = require('../services/healthService');
-const { getIdentity, markSetupCompleted, updateHealthCheck, getTimeSinceHealthCheck } = require('../services/identityService');
-const { getStorageInfo, canUpload } = require('../services/storageService');
-const { shouldShowBackupReminder } = require('../services/backupService');
-const { UploadFailureHandler, DownloadFailureHandler, SessionFailureHandler } = require('../services/failureDetection');
-const { hasUploadedFiles, hasShownFirstSuccess, markFirstSuccessShown, hasBackupNudgeBeenDismissed, dismissBackupNudge } = require('../services/setupVerification');
+const { encryptFile, decryptFile, encryptFileStream, decryptFileStream } = require('../services/core/cryptoService');
+const { CryptoIntegrityError } = require('../services/core/cryptoErrors');
+const { validateUploadedFile, handleCryptoIntegrityError, getCorruptedFiles, cleanupCorruptedFile } = require('../services/core/fileRecovery');
+const { getUserStatus } = require('../services/monitoring/healthService');
+const { getIdentity, markSetupCompleted, updateHealthCheck, getTimeSinceHealthCheck } = require('../services/core/identityService');
+const { getStorageInfo, canUpload } = require('../services/core/storageService');
+const { shouldShowBackupReminder } = require('../services/core/backupService');
+const { UploadFailureHandler, DownloadFailureHandler, SessionFailureHandler } = require('../services/core/failureDetection');
+const { hasUploadedFiles, hasShownFirstSuccess, markFirstSuccessShown, hasBackupNudgeBeenDismissed, dismissBackupNudge } = require('../services/core/setupVerification');
 
 // Sanitize filename for cross-platform safety
 function safeFilename(originalName) {

@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { getDatabase, saveDatabase } = require('../config/database');
 const { redirectIfAuth } = require('../middleware/auth');
-const { generateSalt } = require('../services/cryptoService');
+const { generateSalt } = require('../services/core/cryptoService');
 
 // Login page
 router.get('/login', redirectIfAuth, (req, res) => {

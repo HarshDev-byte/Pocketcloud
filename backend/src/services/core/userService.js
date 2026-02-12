@@ -2,9 +2,9 @@
  * User Management Service with Role Support
  */
 
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 const bcrypt = require('bcryptjs');
-const { ROLES, isValidRole, getRoleLevel } = require('../config/roles');
+const { ROLES, isValidRole, getRoleLevel } = require('../../config/roles');
 
 class UserService {
   /**

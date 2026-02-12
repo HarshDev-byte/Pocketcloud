@@ -234,7 +234,7 @@ async function startServer() {
       storageMonitor.startMonitoring();
       
       // Start background job scheduler
-      const jobScheduler = require('./services/jobScheduler');
+      const jobScheduler = require('./src/services/automation/jobScheduler');
       jobScheduler.start();
     });
     
@@ -243,7 +243,7 @@ async function startServer() {
       console.log('Received SIGTERM, shutting down gracefully');
       storageMonitor.stopMonitoring();
       
-      const jobScheduler = require('./services/jobScheduler');
+      const jobScheduler = require('./src/services/automation/jobScheduler');
       jobScheduler.stop();
       
       server.close(() => {
@@ -263,7 +263,7 @@ async function startServer() {
       console.log('\nReceived SIGINT, shutting down gracefully');
       storageMonitor.stopMonitoring();
       
-      const jobScheduler = require('./services/jobScheduler');
+      const jobScheduler = require('./src/services/automation/jobScheduler');
       jobScheduler.stop();
       
       server.close(() => {

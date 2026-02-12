@@ -8,10 +8,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs-extra');
 const { requireAuth } = require('../middleware/auth');
-const backupService = require('../services/backupService');
-const restoreService = require('../services/restoreService');
-const { getStorageInfo } = require('../services/storageService');
-const { getIdentity } = require('../services/identityService');
+const backupService = require('../services/core/backupService');
+const restoreService = require('../services/core/restoreService');
+const { getStorageInfo } = require('../services/core/storageService');
+const { getIdentity } = require('../services/core/identityService');
 
 const router = express.Router();
 

@@ -3,10 +3,10 @@
  * Soft delete files with auto-cleanup
  */
 
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 const fs = require('fs').promises;
 const path = require('path');
-const config = require('../config/config');
+const config = require('../../config/config');
 
 class TrashService {
   constructor() {

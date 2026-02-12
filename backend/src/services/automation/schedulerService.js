@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 
 class SchedulerService {
   constructor() {

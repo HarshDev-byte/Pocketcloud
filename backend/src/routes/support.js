@@ -5,8 +5,8 @@
 
 const express = require('express');
 const { requireAuth } = require('../middleware/auth');
-const { getSupportStatement, getUpgradeSafety, detectEnvironment, validateEnvironment } = require('../services/productBoundaries');
-const { getIdentity } = require('../services/identityService');
+const { getSupportStatement, getUpgradeSafety, detectEnvironment, validateEnvironment } = require('../services/core/productBoundaries');
+const { getIdentity } = require('../services/core/identityService');
 
 const router = express.Router();
 

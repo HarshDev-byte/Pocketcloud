@@ -17,11 +17,11 @@ const {
   validateBackupProvider,
   sanitizeInput
 } = require('../middleware/validation');
-const searchService = require('../services/searchService');
-const cloudBackupService = require('../services/cloudBackupService');
-const trashService = require('../services/trashService');
-const thumbnailService = require('../services/thumbnailService');
-const duplicateService = require('../services/duplicateService');
+const searchService = require('../services/core/searchService');
+const cloudBackupService = require('../services/core/cloudBackupService');
+const trashService = require('../services/core/trashService');
+const thumbnailService = require('../services/media/thumbnailService');
+const duplicateService = require('../services/core/duplicateService');
 
 // Apply sanitization to all routes
 router.use(sanitizeInput);

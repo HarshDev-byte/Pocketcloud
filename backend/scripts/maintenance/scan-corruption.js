@@ -5,8 +5,8 @@
  * Scans all files for corruption and provides recovery options
  */
 
-const { scanForCorruption, getCorruptedFiles, cleanupCorruptedFile } = require('../services/fileRecovery');
-const { getDatabase } = require('../config/database');
+const { scanForCorruption, getCorruptedFiles, cleanupCorruptedFile } = require('../src/services/core/fileRecovery');
+const { getDatabase } = require('../src/config/database');
 
 async function scanAndReport() {
   console.log('🔍 PocketCloud Corruption Scanner');

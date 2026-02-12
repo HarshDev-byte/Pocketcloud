@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const db = require('../../config/database');
 const ExifParser = require('exif-parser');
 const fs = require('fs-extra');
 

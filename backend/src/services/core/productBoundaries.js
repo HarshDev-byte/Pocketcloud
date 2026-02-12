@@ -7,7 +7,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const os = require('os');
 const { execSync } = require('child_process');
-const config = require('../config/config');
+const config = require('../../config/config');
 const usbMountService = require('./usbMountService');
 
 // PocketCloud Product Version - FINAL

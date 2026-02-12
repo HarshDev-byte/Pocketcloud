@@ -1,7 +1,7 @@
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const crypto = require('crypto');
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 
 class TwoFactorService {
   /**

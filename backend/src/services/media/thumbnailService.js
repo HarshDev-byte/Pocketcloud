@@ -3,7 +3,7 @@
  * Generate thumbnails for images and videos
  */
 
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 const fs = require('fs').promises;
 const path = require('path');
 const { exec } = require('child_process');

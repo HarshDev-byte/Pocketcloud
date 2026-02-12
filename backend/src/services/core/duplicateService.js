@@ -3,7 +3,7 @@
  * Detect duplicate files using hash comparison
  */
 
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 const crypto = require('crypto');
 const fs = require('fs');
 const { promisify } = require('util');

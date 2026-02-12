@@ -3,7 +3,7 @@
  * Supports S3-compatible storage (AWS S3, Backblaze B2, MinIO, etc.)
  */
 
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 const fs = require('fs').promises;
 const path = require('path');
 const { createReadStream, createWriteStream } = require('fs');

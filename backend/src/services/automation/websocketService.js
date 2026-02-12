@@ -1,6 +1,6 @@
 const socketIO = require('socket.io');
 const sessionService = require('./sessionService');
-const { getDatabase } = require('../config/database');
+const { getDatabase } = require('../../config/database');
 
 class WebSocketService {
   constructor() {
@@ -191,7 +191,7 @@ class WebSocketService {
         );
       }
 
-      require('../config/database').saveDatabase();
+      require('../../config/database').saveDatabase();
     } catch (error) {
       console.error('Error updating user presence:', error);
     }
@@ -211,7 +211,7 @@ class WebSocketService {
         [userId]
       );
 
-      require('../config/database').saveDatabase();
+      require('../../config/database').saveDatabase();
     } catch (error) {
       console.error('Error updating user activity:', error);
     }

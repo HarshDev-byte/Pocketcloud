@@ -2,7 +2,7 @@
  * Advanced Search Service with Full-Text Indexing
  */
 
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 const path = require('path');
 const fs = require('fs').promises;
 

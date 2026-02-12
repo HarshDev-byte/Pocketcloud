@@ -3,7 +3,7 @@
  * Handles sharing, comments, and activity tracking
  */
 
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 
 class CollaborationService {
   /**

@@ -5,8 +5,8 @@
 
 const fs = require('fs-extra');
 const path = require('path');
-const config = require('../config/config');
-const { getDatabase } = require('../config/database');
+const config = require('../../config/config');
+const { getDatabase } = require('../../config/database');
 const { getStorageHealth } = require('./storageService');
 const usbMountService = require('./usbMountService');
 

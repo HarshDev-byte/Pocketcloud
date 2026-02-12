@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const ffmpeg = require('fluent-ffmpeg');
-const db = require('../config/database');
+const db = require('../../config/database');
 
 class VideoStreamingService {
   constructor() {

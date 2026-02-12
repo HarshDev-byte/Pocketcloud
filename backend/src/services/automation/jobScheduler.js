@@ -3,9 +3,9 @@
  * Handles background tasks and scheduled jobs
  */
 
-const trashService = require('./trashService');
-const thumbnailService = require('./thumbnailService');
-const duplicateService = require('./duplicateService');
+const trashService = require('../core/trashService');
+const thumbnailService = require('../media/thumbnailService');
+const duplicateService = require('../core/duplicateService');
 
 class JobScheduler {
   constructor() {

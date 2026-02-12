@@ -4,7 +4,7 @@ const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const { marked } = require('marked');
 const hljs = require('highlight.js');
-const db = require('../config/database');
+const db = require('../../config/database');
 
 class FilePreviewService {
   constructor() {

@@ -11,7 +11,7 @@ const { pipeline } = require('stream');
 const { promisify } = require('util');
 const pipelineAsync = promisify(pipeline);
 
-const config = require('../config/config');
+const config = require('../../config/config');
 const { STORAGE_ROOT } = require('./storageService');
 const { BACKUP_FORMAT_VERSION, checkBackupCompatibility } = require('./productBoundaries');
 const { BackupRestoreFailureHandler } = require('./failureDetection');

@@ -1,4 +1,4 @@
-const { SessionFailureHandler } = require('../services/failureDetection');
+const { SessionFailureHandler } = require('../services/core/failureDetection');
 
 function requireAuth(req, res, next) {
   if (req.session && req.session.userId) {

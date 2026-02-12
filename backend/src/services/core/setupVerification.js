@@ -199,7 +199,7 @@ async function getSetupReadiness() {
 async function isFirstTimeSetup() {
   try {
     // Check if any users exist in database
-    const { getDatabase } = require('../config/database');
+    const { getDatabase } = require('../../config/database');
     const db = getDatabase();
     const result = db.exec('SELECT COUNT(*) as count FROM users');
     
@@ -220,7 +220,7 @@ async function isFirstTimeSetup() {
  */
 async function hasUploadedFiles(userId) {
   try {
-    const { getDatabase } = require('../config/database');
+    const { getDatabase } = require('../../config/database');
     const db = getDatabase();
     const result = db.exec('SELECT COUNT(*) as count FROM files WHERE user_id = ?', [userId]);
     

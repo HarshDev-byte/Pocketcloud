@@ -3,7 +3,7 @@
  * Handles USB drive disconnection gracefully
  */
 
-const usbMountService = require('../services/usbMountService');
+const usbMountService = require('../services/core/usbMountService');
 
 /**
  * Middleware to handle storage errors gracefully

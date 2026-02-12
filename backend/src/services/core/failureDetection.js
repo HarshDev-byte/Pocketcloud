@@ -5,7 +5,7 @@
 
 const fs = require('fs-extra');
 const path = require('path');
-const { getDatabase } = require('../config/database');
+const { getDatabase } = require('../../config/database');
 const { STORAGE_ROOT } = require('./storageService');
 const usbMountService = require('./usbMountService');
 const { getFailureMessage } = require('./failureDrills');
@@ -269,7 +269,7 @@ class BackupRestoreFailureHandler {
       // Restore original database
       const originalDb = path.join(currentDataBackup, 'database.db');
       if (await fs.pathExists(originalDb)) {
-        const config = require('../config/config');
+        const config = require('../../config/config');
         await fs.copy(originalDb, config.DB_PATH);
         rollbackResults.databaseRestored = true;
       }

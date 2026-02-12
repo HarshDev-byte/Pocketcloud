@@ -5,7 +5,7 @@
 
 const fs = require('fs-extra');
 const path = require('path');
-const { getDatabase } = require('../config/database');
+const { getDatabase } = require('../../config/database');
 const { STORAGE_ROOT } = require('./storageService');
 const usbMountService = require('./usbMountService');
 

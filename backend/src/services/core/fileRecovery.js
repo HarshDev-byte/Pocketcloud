@@ -5,8 +5,8 @@
 
 const fs = require('fs-extra');
 const path = require('path');
-const { getDatabase, saveDatabase } = require('../config/database');
-const { getUserStoragePath } = require('../config/storage');
+const { getDatabase, saveDatabase } = require('../../config/database');
+const { getUserStoragePath } = require('../../config/storage');
 const { CryptoIntegrityError } = require('./cryptoErrors');
 
 /**

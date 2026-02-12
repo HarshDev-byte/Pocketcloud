@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const UAParser = require('ua-parser-js');
 const geoip = require('geoip-lite');
-const { getDatabase, saveDatabase } = require('../config/database');
+const { getDatabase, saveDatabase } = require('../../config/database');
 
 class SessionService {
   /**
