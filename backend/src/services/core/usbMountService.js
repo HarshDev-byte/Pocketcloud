@@ -14,8 +14,16 @@ const MOUNT_POINT = '/mnt/pocketcloud';
  * Get UUID of a block device
  */
 function getDeviceUUID(devicePath) {
+  // Skip on non-Linux platforms
+  if (process.platform !== 'linux') {
+    return null;
+  }
+  
   try {
-    const output = execSync(`blkid -s UUID -o value "${devicePath}"`, { encoding: 'utf8' });
+    const output = execSync(`blkid -s UUID -o value "${devicePath}"`, { 
+      encoding: 'utf8',
+      timeout: 5000 
+    });
     return output.trim();
   } catch (error) {
     return null;
@@ -26,8 +34,16 @@ function getDeviceUUID(devicePath) {
  * Get device path from UUID
  */
 function getDeviceFromUUID(uuid) {
+  // Skip on non-Linux platforms
+  if (process.platform !== 'linux') {
+    return null;
+  }
+  
   try {
-    const output = execSync(`blkid -U "${uuid}"`, { encoding: 'utf8' });
+    const output = execSync(`blkid -U "${uuid}"`, { 
+      encoding: 'utf8',
+      timeout: 5000 
+    });
     return output.trim();
   } catch (error) {
     return null;
@@ -38,8 +54,16 @@ function getDeviceFromUUID(uuid) {
  * Get filesystem type of a device
  */
 function getFilesystemType(devicePath) {
+  // Skip on non-Linux platforms
+  if (process.platform !== 'linux') {
+    return null;
+  }
+  
   try {
-    const output = execSync(`blkid -s TYPE -o value "${devicePath}"`, { encoding: 'utf8' });
+    const output = execSync(`blkid -s TYPE -o value "${devicePath}"`, { 
+      encoding: 'utf8',
+      timeout: 5000 
+    });
     return output.trim();
   } catch (error) {
     return null;
@@ -50,8 +74,13 @@ function getFilesystemType(devicePath) {
  * Check if path is mounted
  */
 function isMounted(mountPoint) {
+  // Skip on non-Linux platforms
+  if (process.platform !== 'linux') {
+    return false;
+  }
+  
   try {
-    const output = execSync('mount', { encoding: 'utf8' });
+    const output = execSync('mount', { encoding: 'utf8', timeout: 5000 });
     return output.includes(` ${mountPoint} `);
   } catch (error) {
     return false;
@@ -62,8 +91,16 @@ function isMounted(mountPoint) {
  * Get mount info for a path
  */
 function getMountInfo(mountPoint) {
+  // Skip on non-Linux platforms
+  if (process.platform !== 'linux') {
+    return null;
+  }
+  
   try {
-    const output = execSync(`findmnt -n -o SOURCE,FSTYPE "${mountPoint}"`, { encoding: 'utf8' });
+    const output = execSync(`findmnt -n -o SOURCE,FSTYPE "${mountPoint}"`, { 
+      encoding: 'utf8',
+      timeout: 5000 
+    });
     const parts = output.trim().split(/\s+/);
     return {
       device: parts[0],
@@ -78,13 +115,24 @@ function getMountInfo(mountPoint) {
  * Check if mount point is on root filesystem
  */
 function isOnRootFilesystem(mountPoint) {
+  // Skip on non-Linux platforms
+  if (process.platform !== 'linux') {
+    return true; // Assume on root for safety
+  }
+  
   try {
     // Get device for mount point
-    const mountDf = execSync(`df "${mountPoint}" | tail -1`, { encoding: 'utf8' });
+    const mountDf = execSync(`df "${mountPoint}" | tail -1`, { 
+      encoding: 'utf8',
+      timeout: 5000 
+    });
     const mountDevice = mountDf.split(/\s+/)[0];
     
     // Get device for root
-    const rootDf = execSync('df / | tail -1', { encoding: 'utf8' });
+    const rootDf = execSync('df / | tail -1', { 
+      encoding: 'utf8',
+      timeout: 5000 
+    });
     const rootDevice = rootDf.split(/\s+/)[0];
     
     return mountDevice === rootDevice;
@@ -98,6 +146,16 @@ function isOnRootFilesystem(mountPoint) {
  * Verify mount point meets all requirements
  */
 function verifyMountPoint() {
+  // Quick check for non-Linux systems - fail fast without blocking
+  if (process.platform !== 'linux') {
+    return {
+      valid: false,
+      reason: 'External USB storage only supported on Linux',
+      action: 'Run PocketCloud on Raspberry Pi OS or Linux',
+      code: 'UNSUPPORTED_PLATFORM'
+    };
+  }
+
   // Check 1: Mount point exists
   if (!fs.existsSync(MOUNT_POINT)) {
     return {
@@ -169,6 +227,19 @@ function verifyMountPoint() {
  * Get detailed mount status for diagnostics
  */
 function getMountStatus() {
+  // Development mode bypass
+  if (process.env.NODE_ENV === 'development' || process.env.POCKETCLOUD_DEV_MODE === 'true') {
+    return {
+      mounted: true,
+      mountPoint: MOUNT_POINT,
+      device: '/dev/mock-usb',
+      fstype: 'ext4',
+      uuid: 'mock-uuid-dev-mode',
+      isPreferred: true,
+      warnings: ['Development mode: Using mock USB storage']
+    };
+  }
+
   const verification = verifyMountPoint();
   
   if (!verification.valid) {

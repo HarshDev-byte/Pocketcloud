@@ -7,8 +7,8 @@
 
 const fs = require('fs-extra');
 const path = require('path');
-const config = require('../src/config/config');
-const { performStartupCleanup, validateSafeState } = require('../src/services/core/failureDrills');
+const config = require('../../src/config/config');
+const { performStartupCleanup, validateSafeState } = require('../../src/services/core/failureDrills');
 
 async function startupCleanup() {
   console.log('Running startup cleanup...');

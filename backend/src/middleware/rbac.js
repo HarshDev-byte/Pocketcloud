@@ -16,17 +16,13 @@ function requirePermission(permission) {
     
     try {
       const db = getDatabase();
-      const stmt = db.prepare('SELECT role FROM users WHERE id = ?');
-      stmt.bind([req.session.userId]);
+      const result = db.exec('SELECT role FROM users WHERE id = ?', [req.session.userId]);
       
-      if (!stmt.step()) {
+      if (result.length === 0 || result[0].values.length === 0) {
         return res.status(401).json({ error: 'User not found' });
       }
       
-      const row = stmt.getAsObject();
-      stmt.free();
-      
-      const userRole = row.role || 'viewer';
+      const userRole = result[0].values[0][0] || 'viewer';
       
       if (!hasPermission(userRole, permission)) {
         return res.status(403).json({ 
@@ -56,17 +52,13 @@ function requireAnyPermission(permissions) {
     
     try {
       const db = getDatabase();
-      const stmt = db.prepare('SELECT role FROM users WHERE id = ?');
-      stmt.bind([req.session.userId]);
+      const result = db.exec('SELECT role FROM users WHERE id = ?', [req.session.userId]);
       
-      if (!stmt.step()) {
+      if (result.length === 0 || result[0].values.length === 0) {
         return res.status(401).json({ error: 'User not found' });
       }
       
-      const row = stmt.getAsObject();
-      stmt.free();
-      
-      const userRole = row.role || 'viewer';
+      const userRole = result[0].values[0][0] || 'viewer';
       
       if (!hasAnyPermission(userRole, permissions)) {
         return res.status(403).json({ 
@@ -96,17 +88,13 @@ function requireAllPermissions(permissions) {
     
     try {
       const db = getDatabase();
-      const stmt = db.prepare('SELECT role FROM users WHERE id = ?');
-      stmt.bind([req.session.userId]);
+      const result = db.exec('SELECT role FROM users WHERE id = ?', [req.session.userId]);
       
-      if (!stmt.step()) {
+      if (result.length === 0 || result[0].values.length === 0) {
         return res.status(401).json({ error: 'User not found' });
       }
       
-      const row = stmt.getAsObject();
-      stmt.free();
-      
-      const userRole = row.role || 'viewer';
+      const userRole = result[0].values[0][0] || 'viewer';
       
       if (!hasAllPermissions(userRole, permissions)) {
         return res.status(403).json({ 
@@ -142,14 +130,11 @@ function attachUserRole(req, res, next) {
   
   try {
     const db = getDatabase();
-    const stmt = db.prepare('SELECT role FROM users WHERE id = ?');
-    stmt.bind([req.session.userId]);
+    const result = db.exec('SELECT role FROM users WHERE id = ?', [req.session.userId]);
     
-    if (stmt.step()) {
-      const row = stmt.getAsObject();
-      req.userRole = row.role || 'viewer';
+    if (result.length > 0 && result[0].values.length > 0) {
+      req.userRole = result[0].values[0][0] || 'viewer';
     }
-    stmt.free();
     
     next();
   } catch (error) {
@@ -175,33 +160,30 @@ function checkOwnership(resourceType, resourceIdParam = 'id') {
     
     try {
       const db = getDatabase();
-      let stmt;
+      let query;
       
       switch (resourceType) {
         case 'file':
-          stmt = db.prepare('SELECT user_id FROM files WHERE id = ?');
+          query = 'SELECT user_id FROM files WHERE id = ?';
           break;
         case 'folder':
-          stmt = db.prepare('SELECT user_id FROM folders WHERE id = ?');
+          query = 'SELECT user_id FROM folders WHERE id = ?';
           break;
         case 'comment':
-          stmt = db.prepare('SELECT user_id FROM comments WHERE id = ?');
+          query = 'SELECT user_id FROM comments WHERE id = ?';
           break;
         default:
           return res.status(400).json({ error: 'Invalid resource type' });
       }
       
-      stmt.bind([resourceId]);
+      const result = db.exec(query, [resourceId]);
       
-      if (!stmt.step()) {
-        stmt.free();
+      if (result.length === 0 || result[0].values.length === 0) {
         return res.status(404).json({ error: 'Resource not found' });
       }
       
-      const row = stmt.getAsObject();
-      stmt.free();
-      
-      req.isOwner = row.user_id === req.session.userId;
+      const userId = result[0].values[0][0];
+      req.isOwner = userId === req.session.userId;
       next();
     } catch (error) {
       console.error('Ownership check error:', error);

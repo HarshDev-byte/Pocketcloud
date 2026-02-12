@@ -1,5 +1,5 @@
 const socketIO = require('socket.io');
-const sessionService = require('./sessionService');
+const sessionService = require('../security/sessionService');
 const { getDatabase } = require('../../config/database');
 
 class WebSocketService {

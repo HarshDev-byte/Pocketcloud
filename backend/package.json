@@ -36,7 +36,22 @@
     "fs-extra": "^11.3.3",
     "multer": "^2.0.2",
     "sql.js": "^1.13.0",
-    "tar": "^7.5.7"
+    "tar": "^7.5.7",
+    "exif-parser": "^0.1.12",
+    "music-metadata": "^7.14.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.6.0",
+    "marked": "^9.1.6",
+    "highlight.js": "^11.9.0",
+    "sharp": "^0.32.6",
+    "socket.io": "^4.7.4",
+    "node-cron": "^3.0.3",
+    "ua-parser-js": "^1.0.37",
+    "geoip-lite": "^1.4.10",
+    "speakeasy": "^2.0.0",
+    "qrcode": "^1.5.3",
+    "web-push": "^3.6.6"
   },
   "devDependencies": {
     "jest": "^29.0.0"

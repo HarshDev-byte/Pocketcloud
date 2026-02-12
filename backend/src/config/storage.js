@@ -5,10 +5,15 @@ const config = require('./config');
 // Storage configuration - use centralized config
 const STORAGE_BASE = config.STORAGE_ROOT;
 
-// Ensure storage directory exists
-fs.ensureDirSync(STORAGE_BASE);
+// Note: Storage directory creation is deferred until first use
+// This prevents errors during module import when USB is not mounted
 
 function getUserStoragePath(userId) {
+  // Ensure storage base exists when first accessed
+  if (!fs.existsSync(STORAGE_BASE)) {
+    fs.ensureDirSync(STORAGE_BASE);
+  }
+  
   const userPath = path.join(STORAGE_BASE, `user_${userId}`);
   fs.ensureDirSync(userPath);
   return userPath;

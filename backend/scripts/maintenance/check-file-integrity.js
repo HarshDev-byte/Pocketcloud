@@ -7,8 +7,8 @@
 
 const fs = require('fs-extra');
 const path = require('path');
-const { getDatabase } = require('../src/config/database');
-const { getUserStoragePath } = require('../src/config/storage');
+const { getDatabase } = require('../../src/config/database');
+const { getUserStoragePath } = require('../../src/config/storage');
 
 async function checkFileIntegrity() {
   console.log('🔍 PocketCloud File Integrity Check');

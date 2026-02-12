@@ -278,7 +278,7 @@ class SchedulerService {
    * Execute backup task
    */
   async executeBackupTask(task) {
-    const backupService = require('./cloudBackupService');
+    const backupService = require('../core/cloudBackupService');
     
     if (task.userId) {
       return await backupService.createBackup(task.userId, task.config);
@@ -295,7 +295,7 @@ class SchedulerService {
     const results = {};
 
     if (task.config.cleanTrash) {
-      const trashService = require('./trashService');
+      const trashService = require('../core/trashService');
       results.trash = await trashService.emptyTrash(task.userId);
     }
 
@@ -305,7 +305,7 @@ class SchedulerService {
     }
 
     if (task.config.cleanOldLogs) {
-      const auditLogService = require('./auditLogService');
+      const auditLogService = require('../security/auditLogService');
       results.logs = await auditLogService.cleanupOld(90);
     }
 
@@ -316,7 +316,7 @@ class SchedulerService {
    * Execute duplicate scan task
    */
   async executeDuplicateScanTask(task) {
-    const duplicateService = require('./duplicateService');
+    const duplicateService = require('../core/duplicateService');
     
     if (task.userId) {
       const duplicates = await duplicateService.findDuplicates(task.userId);
@@ -335,7 +335,7 @@ class SchedulerService {
    * Execute thumbnail generation task
    */
   async executeThumbnailGenTask(task) {
-    const thumbnailService = require('./thumbnailService');
+    const thumbnailService = require('../media/thumbnailService');
     const db = getDatabase();
     
     // Get files without thumbnails

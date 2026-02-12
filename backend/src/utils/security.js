@@ -11,7 +11,16 @@ function ensureInside(baseDir, targetPath) {
   const resolvedBase = path.resolve(baseDir);
   const resolvedTarget = path.resolve(targetPath);
   
-  if (!resolvedTarget.startsWith(resolvedBase + path.sep)) {
+  // Use path.relative to check if target is inside base
+  const relativePath = path.relative(resolvedBase, resolvedTarget);
+  
+  // If relative path starts with '..' or is absolute, it's outside base directory
+  if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+    throw new Error('Path traversal detected');
+  }
+  
+  // Additional check: ensure resolved target actually starts with base path
+  if (!resolvedTarget.startsWith(resolvedBase + path.sep) && resolvedTarget !== resolvedBase) {
     throw new Error('Path traversal detected');
   }
 }

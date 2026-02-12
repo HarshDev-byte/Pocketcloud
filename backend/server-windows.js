@@ -12,7 +12,7 @@ const fs = require('fs-extra');
 const config = require('./src/config/windows-config');
 
 // Import services and middleware
-const { initializeDatabase } = require('./src/config/database');
+const { initDatabase } = require('./src/config/database');
 
 const app = express();
 
@@ -68,18 +68,24 @@ async function initializeApp() {
     
     // Initialize database
     console.log('Initializing database...');
-    await initializeDatabase();
+    await initDatabase();
     console.log('✓ Database initialized');
     
     // Import and setup routes after database is ready
     const authRoutes = require('./src/routes/auth');
     const fileRoutes = require('./src/routes/files');
-    const dashboardRoutes = require('./src/routes/dashboard');
+    const indexRoutes = require('./src/routes/index');
+    const setupRoutes = require('./src/routes/setup');
+    const securityRoutes = require('./src/routes/security');
+    const supportRoutes = require('./src/routes/support');
     
     // Setup routes
     app.use('/auth', authRoutes);
     app.use('/files', fileRoutes);
-    app.use('/', dashboardRoutes);
+    app.use('/setup', setupRoutes);
+    app.use('/security', securityRoutes);
+    app.use('/support', supportRoutes);
+    app.use('/', indexRoutes);
     
     // Error handling middleware
     app.use((err, req, res, next) => {

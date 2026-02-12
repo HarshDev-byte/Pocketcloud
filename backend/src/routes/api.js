@@ -7,6 +7,8 @@
 const express = require('express');
 const router = express.Router();
 const { requireAuth } = require('../middleware/auth');
+const { requirePermission, requireAnyPermission, requireAllPermissions } = require('../middleware/rbac');
+const { PERMISSIONS } = require('../config/roles');
 const {
   validateFileId,
   validatePagination,

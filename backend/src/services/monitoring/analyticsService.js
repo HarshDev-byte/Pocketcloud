@@ -1,5 +1,5 @@
 const { getDatabase, saveDatabase } = require('../../config/database');
-const websocketService = require('./websocketService');
+const websocketService = require('../automation/websocketService');
 
 class AnalyticsService {
   constructor() {

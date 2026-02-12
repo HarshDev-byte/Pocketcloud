@@ -7,8 +7,8 @@ const fs = require('fs-extra');
 const path = require('path');
 const config = require('../../config/config');
 const { getDatabase } = require('../../config/database');
-const { getStorageHealth } = require('./storageService');
-const usbMountService = require('./usbMountService');
+const { getStorageHealth } = require('../core/storageService');
+const usbMountService = require('../core/usbMountService');
 
 /**
  * Check if database is reachable and functional

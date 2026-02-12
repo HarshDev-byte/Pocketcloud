@@ -5,7 +5,7 @@
  * Validates that the system enforces product boundaries correctly
  */
 
-const { enforceProductBoundaries, getSupportStatement, getUpgradeSafety } = require('../src/services/core/productBoundaries');
+const { enforceProductBoundaries, getSupportStatement, getUpgradeSafety } = require('../../src/services/core/productBoundaries');
 
 async function validateProductBoundaries() {
   console.log('PocketCloud Product Boundaries Validation');

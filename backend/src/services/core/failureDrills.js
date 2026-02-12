@@ -264,8 +264,9 @@ class FailureVerifier {
           severity: 'critical'
         });
       } else {
-        // Check if writable
-        const testFile = path.join(STORAGE_ROOT, '.write-test');
+        // Check if writable - use actual storage root, not mount point
+        const config = require('../../config/config');
+        const testFile = path.join(config.STORAGE_ROOT, '.write-test');
         try {
           await fs.writeFile(testFile, 'test');
           await fs.remove(testFile);

@@ -55,11 +55,11 @@ A production-grade, offline-first personal cloud storage system designed for Ras
 # Complete automated setup (installs Node.js, Git, everything!)
 setup-pocketcloud-windows.bat
 
-# OR quick setup (if Node.js & Git already installed)
-quick-setup-windows.bat
+# OR start PocketCloud (after setup)
+start-pocketcloud.bat E:
 
-# OR one-liner (advanced users)
-install-pocketcloud.bat E:
+# OR development mode (no USB needed)
+start-dev.bat
 ```
 
 **Access your cloud:** `http://localhost:3000`
@@ -83,8 +83,8 @@ Choose the setup method that fits your comfort level:
 | Script | Best For | What It Does |
 |--------|----------|--------------|
 | `setup-pocketcloud-windows.bat` | Complete beginners | Installs everything automatically |
-| `quick-setup-windows.bat` | Users with Node.js/Git | Quick setup with prerequisites |
-| `install-pocketcloud.bat E:` | Advanced users | One-liner installation |
+| `start-pocketcloud.bat E:` | Daily usage | Starts PocketCloud with USB drive |
+| `start-dev.bat` | Development/testing | Local storage, no USB needed |
 
 ### **🎯 Alternative Setup Methods**
 
@@ -99,11 +99,11 @@ bash setup.sh
 # Option 1: Complete automation (recommended for beginners)
 setup-pocketcloud-windows.bat
 
-# Option 2: Quick setup (Node.js & Git required)
-quick-setup-windows.bat  
+# Option 2: Start PocketCloud (after setup)
+start-pocketcloud.bat E:
 
-# Option 3: One-liner (advanced users)
-install-pocketcloud.bat E:
+# Option 3: Development mode (no USB needed)
+start-dev.bat
 ```
 
 **Manual Control:**

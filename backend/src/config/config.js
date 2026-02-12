@@ -42,7 +42,9 @@ const config = {
   PORT: parseInt(process.env.PORT, 10) || 3000,
   
   // Storage configuration - CANONICAL MOUNT POINT ONLY
-  STORAGE_ROOT: '/mnt/pocketcloud', // Fixed canonical path, no override allowed
+  STORAGE_ROOT: (process.env.NODE_ENV === 'development' || process.env.POCKETCLOUD_DEV_MODE === 'true') 
+    ? path.join(process.cwd(), 'dev-storage') // Development mode: local directory
+    : '/mnt/pocketcloud', // Production: Fixed canonical path, no override allowed
   
   // Upload limits (1GB default - streaming supports it)
   MAX_UPLOAD_SIZE: parseInt(process.env.MAX_UPLOAD_SIZE, 10) || (1024 * 1024 * 1024),

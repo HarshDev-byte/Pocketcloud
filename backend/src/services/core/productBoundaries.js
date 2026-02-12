@@ -322,6 +322,21 @@ function getUpgradeSafety() {
  * Enforce product boundaries at startup
  */
 async function enforceProductBoundaries() {
+  // Development mode bypass
+  if (process.env.NODE_ENV === 'development' || process.env.POCKETCLOUD_DEV_MODE === 'true') {
+    console.log('⚠️  Development mode: Bypassing product boundaries');
+    return {
+      environment: null,
+      config: null,
+      supported: true,
+      criticalIssues: [],
+      warnings: [{
+        type: 'dev_mode',
+        message: 'Running in development mode - some features may not work'
+      }]
+    };
+  }
+
   const results = {
     environment: null,
     config: null,

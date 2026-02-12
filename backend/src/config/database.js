@@ -199,6 +199,24 @@ async function initDatabase() {
     )
   `);
   
+  // Create corrupted_files table for file recovery tracking
+  db.run(`
+    CREATE TABLE IF NOT EXISTS corrupted_files (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      file_id INTEGER,
+      filepath TEXT NOT NULL,
+      error_type TEXT NOT NULL,
+      error_message TEXT,
+      detected_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      resolved_at DATETIME,
+      status TEXT DEFAULT 'detected',
+      recovery_attempts INTEGER DEFAULT 0,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      FOREIGN KEY (file_id) REFERENCES files(id)
+    )
+  `);
+  
   // Create indexes for better performance
   db.run('CREATE INDEX IF NOT EXISTS idx_files_user_id ON files(user_id)');
   db.run('CREATE INDEX IF NOT EXISTS idx_files_folder_id ON files(folder_id)');
@@ -221,6 +239,7 @@ async function initDatabase() {
   console.log('✓ Activity log ready');
   console.log('✓ Search index ready');
   console.log('✓ Backup tables ready');
+  console.log('✓ Corrupted files table ready');
   console.log('✓ Indexes created');
   
   return db;

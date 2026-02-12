@@ -16,6 +16,31 @@ const STORAGE_ROOT = usbMountService.MOUNT_POINT;
  * Get real filesystem statistics for storage path
  */
 function getFilesystemStats(storagePath) {
+  // Development mode: use simple fs.stat instead of df
+  if (process.env.NODE_ENV === 'development' || process.env.POCKETCLOUD_DEV_MODE === 'true') {
+    try {
+      const fs = require('fs');
+      const stats = fs.statSync(storagePath);
+      // Mock filesystem stats for development
+      return {
+        totalBytes: 100 * 1024 * 1024 * 1024, // 100GB mock
+        usedBytes: 10 * 1024 * 1024 * 1024,   // 10GB mock
+        freeBytes: 90 * 1024 * 1024 * 1024,   // 90GB mock
+        percentUsed: 10,
+        available: true
+      };
+    } catch (error) {
+      return {
+        totalBytes: 0,
+        usedBytes: 0,
+        freeBytes: 0,
+        percentUsed: 0,
+        available: false,
+        error: error.message
+      };
+    }
+  }
+
   try {
     // Use df to get real filesystem stats
     const output = execSync(`df -B1 "${storagePath}" | tail -1`, { encoding: 'utf8' });
@@ -50,6 +75,38 @@ function getFilesystemStats(storagePath) {
  * Verify storage is properly configured and available
  */
 async function verifyStorage() {
+  // Development mode: use local directory
+  if (process.env.NODE_ENV === 'development' || process.env.POCKETCLOUD_DEV_MODE === 'true') {
+    const config = require('../../config/config');
+    const actualStoragePath = config.STORAGE_ROOT;
+    
+    // Ensure directory exists
+    const fs = require('fs-extra');
+    await fs.ensureDir(actualStoragePath);
+    
+    // Get filesystem stats for the actual directory
+    const stats = getFilesystemStats(actualStoragePath);
+    if (!stats.available) {
+      return {
+        healthy: false,
+        reason: 'Cannot read storage statistics',
+        action: 'Check development storage directory',
+        code: 'STATS_UNAVAILABLE'
+      };
+    }
+    
+    return {
+      healthy: true,
+      stats,
+      mountInfo: {
+        device: 'dev-storage',
+        fstype: 'local',
+        uuid: 'dev-mode'
+      },
+      warnings: ['Development mode: Using local storage']
+    };
+  }
+
   // Use USB mount service for verification
   const mountStatus = usbMountService.getMountStatus();
   
@@ -159,7 +216,9 @@ async function getStorageInfo() {
       code: verification.code,
       guidance: guidance,
       device: 'External USB Drive',
-      mountPath: STORAGE_ROOT
+      mountPath: (process.env.NODE_ENV === 'development' || process.env.POCKETCLOUD_DEV_MODE === 'true') 
+        ? require('../../config/config').STORAGE_ROOT 
+        : STORAGE_ROOT
     };
   }
   
@@ -188,7 +247,9 @@ async function getStorageInfo() {
     device: verification.mountInfo.device,
     fstype: verification.mountInfo.fstype,
     uuid: verification.mountInfo.uuid,
-    mountPath: STORAGE_ROOT,
+    mountPath: (process.env.NODE_ENV === 'development' || process.env.POCKETCLOUD_DEV_MODE === 'true') 
+      ? require('../../config/config').STORAGE_ROOT 
+      : STORAGE_ROOT,
     totalBytes: stats.totalBytes,
     usedBytes: stats.usedBytes,
     freeBytes: stats.freeBytes,
