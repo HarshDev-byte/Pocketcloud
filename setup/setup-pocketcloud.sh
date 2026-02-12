@@ -84,7 +84,7 @@ verify_usb_drive() {
     
     if ! mountpoint -q "$MOUNT_POINT"; then
         print_error "USB drive is not mounted at $MOUNT_POINT"
-        echo "Please run ./setup-usb-drive.sh first to set up your USB drive"
+        echo "Please run ./setup/setup-usb-storage.sh first to set up your USB drive"
         exit 1
     fi
     
@@ -93,7 +93,7 @@ verify_usb_drive() {
     for dir in "${REQUIRED_DIRS[@]}"; do
         if [ ! -d "$MOUNT_POINT/$dir" ]; then
             print_error "Required directory missing: $MOUNT_POINT/$dir"
-            echo "Please run ./setup-usb-drive.sh to create the proper directory structure"
+            echo "Please run ./setup/setup-usb-storage.sh to create the proper directory structure"
             exit 1
         fi
     done

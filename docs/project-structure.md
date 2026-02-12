@@ -147,15 +147,16 @@ frontend/
 ```
 setup/
 ├── setup-pocketcloud.sh    # Main setup script
-├── setup-usb-drive.sh      # USB drive setup
+├── setup-usb-storage.sh    # USB storage setup
 ├── monitor-usb-drive.sh    # USB monitoring
-└── refresh-github.sh       # GitHub refresh
+└── interactive-setup.sh    # Interactive setup
 ```
 
 ### Management Tools (`tools/`)
 ```
 tools/
-└── check-pocketcloud.sh    # Health check script
+├── system-status.sh       # System health check
+└── backup-pocketcloud.sh  # Backup script
 ```
 
 ### System Configuration (`system/`)

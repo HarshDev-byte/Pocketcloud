@@ -20,7 +20,7 @@
     "logs": "./start-pocketcloud.sh --logs",
     "stop": "./start-pocketcloud.sh --stop",
     "setup": "bash setup.sh",
-    "health": "bash tools/check-pocketcloud.sh"
+    "health": "bash tools/system-status.sh"
   },
   "keywords": [
     "personal-cloud",
