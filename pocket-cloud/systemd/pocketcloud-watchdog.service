@@ -1,0 +1,39 @@
+[Unit]
+Description=Pocket Cloud Drive System Watchdog
+Documentation=https://github.com/pocketcloud/pocketcloud
+After=pocketcloud-backend.service
+Wants=pocketcloud-backend.service
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/pocketcloud
+ExecStart=/opt/pocketcloud/scripts/watchdog.sh
+Restart=always
+RestartSec=30
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log /mnt/pocketcloud
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+# Resource limits
+MemoryMax=64M
+CPUQuota=10%
+TasksMax=5
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pocketcloud-watchdog
+
+[Install]
+WantedBy=multi-user.target

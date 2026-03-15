@@ -1,0 +1,34 @@
+[Unit]
+Description=PocketCloud Cleanup Service
+Documentation=https://github.com/yourname/pocketcloud
+
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/opt/pocketcloud/backend
+
+# Run cleanup tasks
+ExecStart=/usr/bin/node -e "
+const cleanup = require('./dist/jobs/cleanup.job');
+cleanup.runCleanup().then(() => {
+  console.log('Cleanup completed successfully');
+  process.exit(0);
+}).catch(err => {
+  console.error('Cleanup failed:', err);
+  process.exit(1);
+});
+"
+
+# Environment
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/pocketcloud/backend/.env
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pocketcloud-cleanup
+
+# Resource limits
+MemoryMax=256M
+CPUQuota=50%

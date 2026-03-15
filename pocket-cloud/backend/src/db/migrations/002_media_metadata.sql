@@ -1,0 +1,23 @@
+-- Add media metadata columns to files table
+ALTER TABLE files ADD COLUMN width INTEGER;
+ALTER TABLE files ADD COLUMN height INTEGER;
+ALTER TABLE files ADD COLUMN duration_seconds REAL;
+ALTER TABLE files ADD COLUMN exif_date INTEGER;
+ALTER TABLE files ADD COLUMN gps_lat REAL;
+ALTER TABLE files ADD COLUMN gps_lng REAL;
+ALTER TABLE files ADD COLUMN dominant_color TEXT;
+ALTER TABLE files ADD COLUMN bitrate INTEGER;
+ALTER TABLE files ADD COLUMN fps REAL;
+ALTER TABLE files ADD COLUMN codec TEXT;
+ALTER TABLE files ADD COLUMN sample_rate INTEGER;
+ALTER TABLE files ADD COLUMN artist TEXT;
+ALTER TABLE files ADD COLUMN album TEXT;
+ALTER TABLE files ADD COLUMN title TEXT;
+ALTER TABLE files ADD COLUMN page_count INTEGER;
+ALTER TABLE files ADD COLUMN preview_snippet TEXT;
+ALTER TABLE files ADD COLUMN thumbnail_sm_path TEXT;
+ALTER TABLE files ADD COLUMN thumbnail_md_path TEXT;
+ALTER TABLE files ADD COLUMN poster_path TEXT;
+ALTER TABLE files ADD COLUMN hls_path TEXT;
+ALTER TABLE files ADD COLUMN processing_status TEXT DEFAULT 'pending';
+ALTER TABLE files ADD COLUMN processing_error TEXT;

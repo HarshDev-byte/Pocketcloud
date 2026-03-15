@@ -1,0 +1,33 @@
+[Unit]
+Description=PocketCloud Network Watchdog
+Documentation=https://github.com/yourname/pocketcloud
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/pocketcloud/scripts
+
+# Network monitoring script
+ExecStart=/opt/pocketcloud/scripts/network-watchdog.sh
+
+# Restart policy
+Restart=always
+RestartSec=30
+
+# Environment
+Environment=POCKETCLOUD_STORAGE=/mnt/pocketcloud
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pocketcloud-network
+
+# Resource limits
+MemoryMax=64M
+CPUQuota=10%
+
+[Install]
+WantedBy=multi-user.target

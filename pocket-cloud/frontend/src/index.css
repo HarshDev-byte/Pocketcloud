@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import mobile-specific styles */
+@import './styles/mobile.css';
+
+:root {
+  --pcd-primary: #2563eb;
+  --pcd-primary-hover: #1d4ed8;
+  --pcd-secondary: #64748b;
+  --pcd-success: #10b981;
+  --pcd-warning: #f59e0b;
+  --pcd-error: #ef4444;
+  --pcd-surface: #ffffff;
+  --pcd-surface-secondary: #f8fafc;
+  --pcd-border: #e2e8f0;
+  --pcd-text: #0f172a;
+  --pcd-text-secondary: #64748b;
+}
+
+.dark {
+  --pcd-surface: #0f172a;
+  --pcd-surface-secondary: #1e293b;
+  --pcd-border: #334155;
+  --pcd-text: #f8fafc;
+  --pcd-text-secondary: #cbd5e1;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.5;
+  color: var(--pcd-text);
+  background-color: var(--pcd-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

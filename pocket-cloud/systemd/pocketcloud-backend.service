@@ -1,0 +1,50 @@
+[Unit]
+Description=PocketCloud Drive - Backend API Server
+Documentation=https://github.com/yourname/pocketcloud
+After=network.target mnt-pocketcloud.mount avahi-daemon.service
+Requires=mnt-pocketcloud.mount
+Wants=avahi-daemon.service
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/pocketcloud/backend
+
+# Run database migrations before starting
+ExecStartPre=/usr/bin/node -e "require('./dist/db/migrate')"
+
+# Start the backend server
+ExecStart=/usr/bin/node dist/index.js
+
+# Graceful reload
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Restart policy
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=60
+StartLimitBurst=5
+
+# Environment
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/pocketcloud/backend/.env
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pocketcloud
+
+# Resource limits for Pi 4B
+MemoryMax=768M
+CPUQuota=85%
+TasksMax=256
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/mnt/pocketcloud /opt/pocketcloud/backend
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target
