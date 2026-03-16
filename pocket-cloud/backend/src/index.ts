@@ -47,24 +47,30 @@ const HOST = process.env.HOST || '0.0.0.0';
  * Initialize database connection and run migrations
  */
 async function initializeDatabase_(): Promise<void> {
-  // TODO: Initialize database with proper error handling
-  // TODO: Run migrations if needed
-  // TODO: Create default admin user if none exists
-  // TODO: Set up database optimization tasks
-  
   const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'data', 'storage.db');
   const schemaPath = path.join(__dirname, 'db', 'schema.sql');
   const migrationsDir = path.join(__dirname, 'db', 'migrations');
   
   console.log('Initializing database...');
+  console.log('Database path:', dbPath);
   
   try {
+    // Initialize database connection
     initializeDatabase(dbPath);
     
-    // Run initial schema if database is empty
+    // Check if database is empty (no tables)
+    const database = eval('require')('better-sqlite3')(dbPath);
+    const tables = database.prepare("SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").get();
+    const isEmpty = tables.count === 0;
+    
+    if (isEmpty) {
+      console.log('Database is empty, initializing schema...');
+      initializeSchema(schemaPath);
+    }
+    
+    // Run any pending migrations
     if (needsMigration(migrationsDir)) {
       console.log('Running database migrations...');
-      initializeSchema(schemaPath);
       runMigrations(migrationsDir);
     }
     

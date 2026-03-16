@@ -7,9 +7,18 @@
 const join = (...paths: string[]) => paths.join('/');
 
 // Mock fs module for compatibility
-const existsSync = (path: string) => false;
-const readdirSync = (path: string) => [];
-const readFileSync = (path: string, encoding?: string) => '';
+const existsSync = (path: string) => {
+  const fs = eval('require')('fs');
+  return fs.existsSync(path);
+};
+const readdirSync = (path: string) => {
+  const fs = eval('require')('fs');
+  return fs.readdirSync(path);
+};
+const readFileSync = (path: string, encoding?: string) => {
+  const fs = eval('require')('fs');
+  return fs.readFileSync(path, encoding);
+};
 
 import { getDatabase, executeSchema } from './client.js';
 

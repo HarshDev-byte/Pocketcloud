@@ -7,8 +7,9 @@ import Database from 'better-sqlite3';
 
 // Mock fs module for compatibility
 const readFileSync = (path: string, encoding?: string) => {
-  // Mock implementation - return empty schema for now
-  return '';
+  // Use eval to access Node.js fs module
+  const fs = eval('require')('fs');
+  return fs.readFileSync(path, encoding);
 };
 
 // Mock path module for compatibility
@@ -26,8 +27,14 @@ export function initializeDatabase(dbPath: string): Database.Database {
     return db;
   }
 
-  // TODO: Create database directory if it doesn't exist
-  // TODO: Set proper file permissions for security
+  // Create database directory if it doesn't exist
+  const fs = eval('require')('fs');
+  const path = eval('require')('path');
+  const dbDir = path.dirname(dbPath);
+  
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
 
   db = new Database(dbPath, {
     verbose: false, // Disable verbose logging for compatibility

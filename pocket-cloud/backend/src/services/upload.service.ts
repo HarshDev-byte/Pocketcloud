@@ -52,7 +52,15 @@ class UploadService {
 
   constructor() {
     this.ensureTempDir();
-    this.loadPersistedSessions();
+    
+    // Defer loading persisted sessions until database is ready
+    setTimeout(async () => {
+      try {
+        await this.loadPersistedSessions();
+      } catch (error: any) {
+        console.warn('Failed to load persisted sessions:', error.message);
+      }
+    }, 1000);
     
     // Clean up expired sessions every hour
     setInterval(() => {

@@ -228,7 +228,6 @@ router.get('/api/files/:id/preview', authMiddleware, async (req: Request, res: R
     res.setHeader('Content-Type', 'image/webp');
     res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
     
-    const fs = await import('fs');
     const stream = fs.createReadStream(thumbnailPath);
     stream.pipe(res);
   } catch (error) {
