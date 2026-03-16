@@ -1,13 +1,13 @@
-# 🚀 PocketCloud Setup Order Guide
+# 🚀 PocketCloud Setup Guide
 
-Complete step-by-step instructions for setting up PocketCloud on Raspberry Pi 4B with 1TB USB storage.
+Simple, clean setup for PocketCloud on Raspberry Pi 4B with USB storage.
 
 ## 📋 Prerequisites
 
 **Hardware Required:**
 - Raspberry Pi 4B (4GB RAM minimum)
-- 32GB+ microSD card (A2 rated recommended)
-- 1TB+ USB 3.0 drive (SSD preferred)
+- 32GB+ microSD card (Class 10 or A2 rated)
+- 50GB+ USB 3.0 drive (SSD recommended for best performance)
 - Power supply (5V 3A USB-C)
 - Ethernet cable (for initial setup)
 
@@ -20,109 +20,67 @@ Complete step-by-step instructions for setting up PocketCloud on Raspberry Pi 4B
 
 ## 🎯 Method 1: Complete Automated Setup (Recommended)
 
-**For beginners - Everything in one command:**
+**One command does everything - perfect for beginners:**
 
 ### Step 1: Connect to Your Pi
 ```bash
-# SSH into your Raspberry Pi
 ssh pi@[PI_IP_ADDRESS]
 # Example: ssh pi@192.168.1.100
 ```
 
 ### Step 2: Run Complete Setup
 ```bash
-# One command to set up everything
 curl -fsSL https://raw.githubusercontent.com/HarshDev-byte/Pocketcloud/master/scripts/setup-raspberry-pi.sh | sudo bash
 ```
 
-**This single script will:**
-1. Update your Pi system
-2. Download PocketCloud
-3. Set up USB storage automatically
-4. Install and configure PocketCloud
-5. Set up WiFi hotspot
-6. Optimize performance
+**This single command will:**
+1. ✅ Update your Pi system
+2. ✅ Set up USB storage (interactive selection)
+3. ✅ Download and install PocketCloud
+4. ✅ Configure WiFi hotspot
+5. ✅ Set up web interface
+6. ✅ Configure automatic startup
 
 **Total time: 15-20 minutes**
 
 ---
 
-## 🔧 Method 2: Step-by-Step Manual Setup
+## 🔧 Method 2: Step-by-Step Setup
 
-**For advanced users who want control over each step:**
+**For users who want control over each step:**
 
 ### Step 1: Connect to Your Pi
 ```bash
 ssh pi@[PI_IP_ADDRESS]
 ```
 
-### Step 2: Update System
+### Step 2: Set Up USB Storage (FIRST)
 ```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-### Step 3: Set Up USB Storage
-```bash
-# Download and run USB storage setup
 curl -fsSL https://raw.githubusercontent.com/HarshDev-byte/Pocketcloud/master/scripts/setup-usb-storage.sh | sudo bash
 ```
 
 **What this does:**
-- Detects your USB drives
-- Lets you choose which drive to use
-- Formats with optimal ext4 settings
-- Sets up automatic mounting
+- Detects all USB drives
+- Interactive drive selection
+- Safe formatting with confirmation
+- Creates mount point at `/mnt/pocketcloud`
+- Sets up automatic mounting on boot
 - Creates directory structure
-- Configures performance optimization
 
-### Step 4: Install PocketCloud
+### Step 3: Install PocketCloud (SECOND)
 ```bash
-# Download and run PocketCloud installer
-curl -fsSL https://raw.githubusercontent.com/HarshDev-byte/Pocketcloud/master/scripts/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/HarshDev-byte/Pocketcloud/master/scripts/install-pocketcloud.sh | sudo bash
 ```
 
 **What this does:**
-- Installs Node.js and dependencies
 - Downloads PocketCloud from GitHub
-- Builds the application
+- Installs Node.js dependencies
+- Builds frontend application
 - Sets up WiFi hotspot
-- Configures services
-- Optimizes for Raspberry Pi
+- Configures web interface
+- Sets up automatic startup
 
 **Total time: 15-20 minutes**
-
----
-
-## 🔍 Method 3: Individual Script Execution
-
-**For developers who want maximum control:**
-
-### Step 1: Clone Repository
-```bash
-git clone https://github.com/HarshDev-byte/Pocketcloud.git
-cd Pocketcloud
-```
-
-### Step 2: Run Individual Setup Scripts
-```bash
-# 1. Set up USB storage
-sudo bash scripts/setup-usb-storage.sh
-
-# 2. Set up network (WiFi hotspot)
-sudo bash pocket-cloud/scripts/setup/setup-network.sh
-
-# 3. Install Node.js
-sudo bash pocket-cloud/scripts/setup/setup-node.sh
-
-# 4. Set up application
-bash pocket-cloud/scripts/setup/setup-app.sh
-
-# 5. Configure services
-sudo bash pocket-cloud/scripts/setup/install-services-new.sh
-
-# 6. Optimize performance
-sudo bash pocket-cloud/scripts/optimization/optimize-pi.sh
-```
 
 ---
 
@@ -136,96 +94,80 @@ sudo bash pocket-cloud/scripts/optimization/optimize-pi.sh
 ### Step 2: Access Web Interface
 Open browser and go to:
 - **Main interface**: http://192.168.4.1
-- **Admin panel**: http://192.168.4.1/admin
 
 ### Step 3: Complete Setup Wizard
-The web interface will guide you through:
-1. Creating admin account
-2. Configuring WiFi settings
-3. Setting up users
-4. Configuring storage options
+The web interface will guide you through initial configuration.
 
 ---
 
 ## 🚨 Troubleshooting
 
-### If Setup Fails
-
-**Check system requirements:**
-```bash
-# Check Pi model
-cat /proc/cpuinfo | grep "Raspberry Pi"
-
-# Check RAM
-free -h
-
-# Check disk space
-df -h
-```
-
-**Check USB drive:**
-```bash
-# List USB devices
-lsusb
-
-# List storage devices
-lsblk
-```
-
-**Check internet connection:**
-```bash
-ping -c 3 google.com
-```
-
 ### Common Issues
-
-**"Permission denied" errors:**
-- Make sure you're using `sudo` for setup scripts
-- Check that you're running as the `pi` user
 
 **"No USB drives detected":**
 - Ensure USB drive is connected to USB 3.0 port (blue)
 - Try a different USB cable
 - Some drives need external power
 
+**Input not working when typing 'y':**
+- Scripts now handle piped input correctly
+- Make sure you're using the latest version from GitHub
+
 **"Cannot connect to WiFi":**
 - Wait 3-5 minutes after setup completes
-- Check if LED is pulsing green (ready state)
 - Try restarting the Pi: `sudo reboot`
+- Check if WiFi LED is active
 
 **Web interface won't load:**
 - Ensure you're connected to PocketCloud WiFi (not your home WiFi)
 - Try http://192.168.4.1 (not https)
 - Clear browser cache
 
+### Check System Status
+
+**Check if services are running:**
+```bash
+sudo systemctl status pocketcloud
+sudo systemctl status hostapd
+sudo systemctl status dnsmasq
+```
+
+**Check USB storage:**
+```bash
+df -h /mnt/pocketcloud
+```
+
+**Check logs:**
+```bash
+tail -f /var/log/pocketcloud-install.log
+```
+
 ---
 
 ## 📊 What Each Script Does
 
 ### `setup-raspberry-pi.sh` (Complete Setup)
-- ✅ System updates and preparation
-- ✅ USB storage detection and setup
-- ✅ PocketCloud installation
-- ✅ WiFi hotspot configuration
-- ✅ Performance optimization
-- ✅ Service configuration
+- ✅ System updates and dependency installation
+- ✅ Hardware compatibility checks
+- ✅ Calls USB storage setup automatically
+- ✅ Calls PocketCloud installation automatically
+- ✅ Complete end-to-end setup
 
 ### `setup-usb-storage.sh` (USB Storage Only)
-- ✅ Interactive USB drive detection
-- ✅ Safe formatting with confirmation
+- ✅ Interactive USB drive detection and selection
+- ✅ Safe formatting with user confirmation
 - ✅ Optimal ext4 filesystem setup
-- ✅ Automatic mounting configuration
-- ✅ Performance optimization
-- ✅ Health monitoring setup
-- ✅ Maintenance tools installation
+- ✅ Automatic mounting configuration at `/mnt/pocketcloud`
+- ✅ Directory structure creation
+- ✅ Proper permissions setup
 
-### `install.sh` (PocketCloud Only)
-- ✅ Dependency installation
-- ✅ Node.js setup
+### `install-pocketcloud.sh` (PocketCloud Only)
 - ✅ PocketCloud download and build
+- ✅ Node.js dependency installation
 - ✅ WiFi hotspot configuration
-- ✅ Service setup and startup
-- ✅ Health checks
+- ✅ Web interface setup
+- ✅ Systemd service configuration
+- ✅ Nginx reverse proxy setup
 
 ---
 
@@ -237,7 +179,7 @@ ping -c 3 google.com
 # SSH into your Pi
 ssh pi@[PI_IP_ADDRESS]
 
-# Run complete setup
+# Run complete setup (one command does everything)
 curl -fsSL https://raw.githubusercontent.com/HarshDev-byte/Pocketcloud/master/scripts/setup-raspberry-pi.sh | sudo bash
 
 # Wait for completion and reboot
@@ -245,7 +187,7 @@ curl -fsSL https://raw.githubusercontent.com/HarshDev-byte/Pocketcloud/master/sc
 # Visit http://192.168.4.1
 ```
 
-This is the simplest and most reliable method that handles everything automatically with proper error checking and optimization.
+This is the simplest and most reliable method that handles everything automatically.
 
 ---
 
@@ -256,18 +198,12 @@ If you encounter issues:
 1. **Check logs:**
    ```bash
    tail -f /var/log/pocketcloud-install.log
-   sudo journalctl -u pocketcloud-backend -f
+   sudo journalctl -u pocketcloud -f
    ```
 
-2. **Run health check:**
-   ```bash
-   sudo /opt/pocketcloud/pocket-cloud/scripts/monitoring/health-check.sh
-   ```
-
-3. **Get support:**
+2. **Get support:**
    - GitHub Issues: https://github.com/HarshDev-byte/Pocketcloud/issues
-   - GitHub Discussions: https://github.com/HarshDev-byte/Pocketcloud/discussions
 
 ---
 
-*This guide covers PocketCloud v1.0.0 setup on Raspberry Pi 4B. For the latest updates, visit the [GitHub repository](https://github.com/HarshDev-byte/Pocketcloud).*
+*This guide covers PocketCloud v2.0.0 setup on Raspberry Pi 4B. Scripts are clean, focused, and handle input properly when run via curl.*
