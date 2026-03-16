@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# PocketCloud Raspberry Pi 4B Complete Setup Script
+# PocketCloud Raspberry Pi 4B Complete Setup Script - Fixed Version
 # One-command setup for Pi 4B with 1TB USB storage
 
-SCRIPT_VERSION="1.0.0"
+SCRIPT_VERSION="1.0.1"
 POCKETCLOUD_REPO="https://github.com/HarshDev-byte/Pocketcloud.git"
 INSTALL_DIR="/opt/pocketcloud"
 
@@ -27,7 +27,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🥧 PocketCloud Raspberry Pi 4B Complete Setup v$SCRIPT_VERSION"
+echo "🥧 PocketCloud Raspberry Pi 4B Complete Setup v$SCRIPT_VERSION (Fixed)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 echo "This will set up your Raspberry Pi 4B as a complete PocketCloud server:"
@@ -46,22 +46,22 @@ log "Step 1: Preparing system..."
 apt update && apt upgrade -y
 success "System updated"
 
-# Step 2: Clone PocketCloud
-log "Step 2: Downloading PocketCloud..."
-if [[ ! -d "$INSTALL_DIR" ]]; then
-    git clone "$POCKETCLOUD_REPO" "$INSTALL_DIR"
-fi
-cd "$INSTALL_DIR"
-success "PocketCloud downloaded"
+# Step 2: Download scripts
+log "Step 2: Downloading PocketCloud scripts..."
+cd /tmp
+wget https://raw.githubusercontent.com/HarshDev-byte/Pocketcloud/master/scripts/setup-usb-storage.sh
+wget https://raw.githubusercontent.com/HarshDev-byte/Pocketcloud/master/scripts/install-fixed.sh
+chmod +x setup-usb-storage.sh install-fixed.sh
+success "Scripts downloaded"
 
 # Step 3: Setup USB storage
 log "Step 3: Setting up USB storage..."
-bash scripts/setup-usb-storage.sh
+bash setup-usb-storage.sh
 success "USB storage configured"
 
 # Step 4: Install PocketCloud
 log "Step 4: Installing PocketCloud..."
-bash scripts/install.sh
+bash install-fixed.sh
 success "PocketCloud installed"
 
 echo

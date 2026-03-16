@@ -5,7 +5,7 @@ set -euo pipefail
 # One-command installation on existing Raspberry Pi OS
 
 SCRIPT_VERSION="1.0.0"
-POCKETCLOUD_REPO="https://github.com/pocketcloud/pocketcloud.git"
+POCKETCLOUD_REPO="https://github.com/HarshDev-byte/Pocketcloud.git"
 INSTALL_DIR="/opt/pocketcloud"
 LOG_FILE="/var/log/pocketcloud-install.log"
 
@@ -193,23 +193,36 @@ run_setup_scripts() {
     # Network setup
     local start_time=$(date +%s)
     progress "Configuring WiFi hotspot"
-    sudo -u pocketcloud bash scripts/setup-network.sh
+    if [[ -f "pocket-cloud/scripts/setup/setup-network.sh" ]]; then
+        bash pocket-cloud/scripts/setup/setup-network.sh
+    else
+        warn "Network setup script not found, skipping..."
+    fi
     local end_time=$(date +%s)
     local duration=$((end_time - start_time))
     progress "Configuring WiFi hotspot" "$duration"
     
-    # Storage setup
+    # Storage setup (already done separately)
     start_time=$(date +%s)
-    progress "Setting up storage drive"
-    sudo -u pocketcloud bash scripts/setup-storage.sh
+    progress "Verifying storage setup"
+    if [[ ! -d "/mnt/pocketcloud" ]]; then
+        warn "Storage not set up, running USB storage setup..."
+        bash scripts/setup-usb-storage.sh
+    fi
     end_time=$(date +%s)
     duration=$((end_time - start_time))
-    progress "Setting up storage drive" "$duration"
+    progress "Verifying storage setup" "$duration"
     
     # Node.js installation
     start_time=$(date +%s)
     progress "Installing Node.js"
-    sudo -u pocketcloud bash scripts/setup-node.sh
+    if [[ -f "pocket-cloud/scripts/setup/setup-node.sh" ]]; then
+        bash pocket-cloud/scripts/setup/setup-node.sh
+    else
+        # Install Node.js directly
+        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+        apt-get install -y nodejs
+    fi
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     progress "Installing Node.js" "$duration"
@@ -217,7 +230,15 @@ run_setup_scripts() {
     # Application setup
     start_time=$(date +%s)
     progress "Installing PocketCloud"
-    sudo -u pocketcloud bash scripts/setup-app.sh
+    if [[ -f "pocket-cloud/scripts/setup/setup-app.sh" ]]; then
+        bash pocket-cloud/scripts/setup/setup-app.sh
+    else
+        # Install application directly
+        cd "$INSTALL_DIR/pocket-cloud/backend"
+        npm install
+        cd "$INSTALL_DIR/pocket-cloud/frontend"
+        npm install
+    fi
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     progress "Installing PocketCloud" "$duration"
@@ -225,8 +246,8 @@ run_setup_scripts() {
     # Build frontend
     start_time=$(date +%s)
     progress "Building frontend"
-    cd "$INSTALL_DIR/frontend"
-    sudo -u pocketcloud npm run build
+    cd "$INSTALL_DIR/pocket-cloud/frontend"
+    npm run build
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     progress "Building frontend" "$duration"
@@ -235,18 +256,26 @@ run_setup_scripts() {
     start_time=$(date +%s)
     progress "Starting services"
     cd "$INSTALL_DIR"
-    bash scripts/setup-services.sh
+    if [[ -f "pocket-cloud/scripts/setup/install-services-new.sh" ]]; then
+        bash pocket-cloud/scripts/setup/install-services-new.sh
+    else
+        warn "Service setup script not found, manual configuration needed"
+    fi
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     progress "Starting services" "$duration"
     
     # Hardware optimization
     start_time=$(date +%s)
-    progress "Running health check"
-    bash scripts/optimize-pi.sh
+    progress "Running optimization"
+    if [[ -f "pocket-cloud/scripts/optimization/optimize-pi.sh" ]]; then
+        bash pocket-cloud/scripts/optimization/optimize-pi.sh
+    else
+        warn "Optimization script not found, skipping..."
+    fi
     end_time=$(date +%s)
     duration=$((end_time - start_time))
-    progress "Running health check" "$duration"
+    progress "Running optimization" "$duration"
 }
 
 # Generate unique configuration
