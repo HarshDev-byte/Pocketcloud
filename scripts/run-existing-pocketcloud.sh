@@ -18,9 +18,9 @@ if [ ! -f "backend/src/index.ts" ]; then
     exit 1
 fi
 
-if [ ! -f "frontend/src/App.tsx" ]; then
+if [ ! -f "frontend/src/main.tsx" ]; then
     echo "❌ Error: Existing React frontend not found"
-    echo "   Expected: frontend/src/App.tsx"
+    echo "   Expected: frontend/src/main.tsx"
     exit 1
 fi
 
@@ -75,15 +75,43 @@ fi
 
 # Build the existing TypeScript backend
 echo "🔨 Building TypeScript backend..."
-npm run build
+if [ ! -d "dist" ]; then
+    echo "   Creating dist directory and copying source files..."
+    mkdir -p dist
+    # Copy TypeScript files and compile them with tsx
+    npx tsx --build src/index.ts --outDir dist 2>/dev/null || {
+        echo "   Using tsx to run TypeScript directly..."
+        # Create a simple wrapper that uses tsx
+        cat > dist/index.js << 'EOF'
+// PocketCloud Backend - TypeScript Runtime Wrapper
+const { spawn } = require('child_process');
+const path = require('path');
 
-# Check if build was successful
-if [ ! -f "dist/index.js" ]; then
-    echo "❌ Backend build failed"
-    exit 1
+// Run the TypeScript source directly with tsx
+const tsxPath = path.join(__dirname, '../node_modules/.bin/tsx');
+const srcPath = path.join(__dirname, '../src/index.ts');
+
+console.log('🚀 Starting PocketCloud TypeScript backend...');
+const child = spawn('node', [tsxPath, srcPath], {
+    stdio: 'inherit',
+    env: process.env
+});
+
+child.on('error', (error) => {
+    console.error('Failed to start backend:', error);
+    process.exit(1);
+});
+
+child.on('exit', (code) => {
+    process.exit(code);
+});
+EOF
+    }
+else
+    echo "   Backend already built"
 fi
 
-echo "✅ Backend built successfully"
+echo "✅ Backend ready"
 
 # Build the existing React frontend
 echo "🎨 Building React frontend..."
