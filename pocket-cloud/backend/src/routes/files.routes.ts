@@ -2,11 +2,11 @@ import { Router, Request, Response } from 'express';
 import { promises as fs } from 'fs';
 import multer from 'multer';
 import { z } from 'zod';
-import { authMiddleware } from '../middleware/auth.middleware.js';
-import { fileService, NotFoundError, ForbiddenError, ValidationError } from '../services/file.service.js';
-import { uploadService, UploadError, ChecksumError } from '../services/upload.service.js';
-import { thumbnailService } from '../services/thumbnail.service.js';
-import { File, Folder } from '../db/types.js';
+import { authMiddleware } from '../middleware/auth.middleware';
+import { fileService, NotFoundError, ForbiddenError, ValidationError } from '../services/file.service';
+import { uploadService, UploadError, ChecksumError } from '../services/upload.service';
+import { thumbnailService } from '../services/thumbnail.service';
+import { File, Folder } from '../db/types';
 
 const router = Router();
 

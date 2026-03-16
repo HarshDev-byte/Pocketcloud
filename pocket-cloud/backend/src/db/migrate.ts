@@ -20,7 +20,7 @@ const readFileSync = (path: string, encoding?: string) => {
   return fs.readFileSync(path, encoding);
 };
 
-import { getDatabase, executeSchema } from './client.js';
+import { getDatabase, executeSchema } from './client';
 
 interface Migration {
   version: number;

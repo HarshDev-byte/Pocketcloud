@@ -16,21 +16,21 @@ const http = eval('require')('http');
 const path = eval('require')('path');
 
 // Import database
-import { initializeDatabase, closeDatabase } from './db/client.js';
-import { initializeSchema, runMigrations, needsMigration } from './db/migrate.js';
+import { initializeDatabase, closeDatabase } from './db/client';
+import { initializeSchema, runMigrations, needsMigration } from './db/migrate';
 
 // Import middleware
-import { errorHandler } from './middleware/error.middleware.js';
-import { requireAuth } from './middleware/auth.middleware.js';
+import { errorHandler } from './middleware/error.middleware';
+import { requireAuth } from './middleware/auth.middleware';
 
 // Import routes
-import authRoutes from './routes/auth.routes.js';
-import filesRoutes from './routes/files.routes.js';
-import foldersRoutes from './routes/folders.routes.js';
-import uploadRoutes from './routes/upload.routes.js';
-import networkRoutes from './routes/network.routes.js';
-import trashRoutes from './routes/trash.routes.js';
-import adminRoutes from './routes/admin.routes.js';
+import authRoutes from './routes/auth.routes';
+import filesRoutes from './routes/files.routes';
+import foldersRoutes from './routes/folders.routes';
+import uploadRoutes from './routes/upload.routes';
+import networkRoutes from './routes/network.routes';
+import trashRoutes from './routes/trash.routes';
+import adminRoutes from './routes/admin.routes';
 
 // Load environment variables
 config();
