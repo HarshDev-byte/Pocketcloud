@@ -80,13 +80,15 @@ export const statements: StatementCache = {
   get updateUploadChunks(): Statement { return db.prepare('UPDATE upload_sessions SET received_chunks = ? WHERE id = ?'); },
 };
 
-// Run migrations on startup (integrity check will be called from backup service)
-try {
-  migrate();
-} catch (error: any) {
-  console.error('Database initialization failed:', error.message);
-  process.exit(1);
-}
+// Run migrations after database is fully initialized
+setTimeout(() => {
+  try {
+    migrate(db);
+  } catch (error: any) {
+    console.error('Database initialization failed:', error.message);
+    process.exit(1);
+  }
+}, 100);
 
 // Note: Graceful shutdown is now handled by shutdown.ts
 // These handlers are kept for backward compatibility but will be overridden

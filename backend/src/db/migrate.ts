@@ -1,4 +1,4 @@
-import { db } from './client';
+import Database from 'better-sqlite3';
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { logger } from '../utils/logger';
@@ -13,17 +13,33 @@ db.exec(`
   )
 `);
 
-export function migrate(): void {
+export function migrate(database?: Database.Database): void {
+  const dbInstance = database || db;
+  
+  if (!dbInstance) {
+    throw new Error('Database not initialized');
+  }
+  
   const migrationsDir = join(__dirname, 'migrations');
   
   try {
+    // Create migrations tracking table
+    dbInstance.exec(`
+      CREATE TABLE IF NOT EXISTS migrations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        version INTEGER UNIQUE NOT NULL,
+        filename TEXT NOT NULL,
+        applied_at INTEGER NOT NULL
+      )
+    `);
+
     // Get all SQL files sorted by filename
     const migrationFiles = readdirSync(migrationsDir)
       .filter(file => file.endsWith('.sql'))
       .sort();
 
     // Get already applied migrations
-    const appliedMigrations = db.prepare('SELECT filename FROM migrations').all() as { filename: string }[];
+    const appliedMigrations = dbInstance.prepare('SELECT filename FROM migrations').all() as { filename: string }[];
     const appliedSet = new Set(appliedMigrations.map(m => m.filename));
 
     // Apply unapplied migrations
@@ -40,9 +56,9 @@ export function migrate(): void {
       const version = versionMatch ? parseInt(versionMatch[1], 10) : 0;
 
       // Run migration in transaction
-      const transaction = db.transaction(() => {
-        db.exec(sql);
-        db.prepare('INSERT INTO migrations (version, filename, applied_at) VALUES (?, ?, ?)').run(
+      const transaction = dbInstance.transaction(() => {
+        dbInstance.exec(sql);
+        dbInstance.prepare('INSERT INTO migrations (version, filename, applied_at) VALUES (?, ?, ?)').run(
           version,
           filename,
           Date.now()
