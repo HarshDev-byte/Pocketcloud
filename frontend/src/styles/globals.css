@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --sidebar-width: 240px;
+    --topbar-height: 56px;
+    --content-max: 1400px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-100;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-200 dark:bg-surface-800;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-300 dark:bg-surface-700;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-brand-200 text-brand-900;
+  }
+
+  .dark ::selection {
+    @apply bg-brand-800 text-brand-100;
+  }
+
+  /* Remove number input arrows */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Focus visible only on keyboard */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-brand-500 outline-offset-2;
+  }
+}
+
+@layer components {
+  /* Glassmorphism card */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .glass {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* File grid item hover */
+  .file-item {
+    @apply rounded-lg cursor-pointer select-none transition-all duration-150 ease-out;
+  }
+
+  .file-item:hover {
+    @apply bg-surface-100 dark:bg-surface-800;
+  }
+
+  .file-item.selected {
+    @apply bg-brand-50 dark:bg-brand-900/30 ring-1 ring-brand-300 dark:ring-brand-700;
+  }
+
+  /* Truncate filename */
+  .filename {
+    @apply truncate text-sm font-medium;
+  }
+
+  /* Sidebar item */
+  .nav-item {
+    @apply flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-100 cursor-pointer text-surface-600 dark:text-surface-300;
+  }
+
+  .nav-item:hover {
+    @apply bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-white;
+  }
+
+  .nav-item.active {
+    @apply bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300;
+  }
+}

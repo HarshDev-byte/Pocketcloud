@@ -1,139 +1,117 @@
 # PocketCloud Documentation
 
-Welcome to the PocketCloud documentation! This directory contains comprehensive documentation for all aspects of the PocketCloud project.
+## 📁 Documentation Structure
 
-## 📚 Documentation Structure
+### Features (`features/`)
 
-### 🏗️ [Architecture](architecture/)
-System design and technical architecture documentation:
-- **[Security](architecture/security.md)** - Security model and implementation
-- **[Performance](architecture/performance.md)** - Performance optimization and benchmarks
-- **[Enclosure](architecture/enclosure.md)** - Hardware enclosure design
+Detailed documentation for each major feature:
 
-### ✨ [Features](features/)
-Detailed feature documentation and implementation guides:
-- **[PWA Implementation](features/pwa-implementation.md)** - Progressive Web App features
-- **[Mobile PWA](features/pwa-mobile-implementation.md)** - Mobile-specific PWA features
-- **[Zero Config Discovery](features/zero-config-discovery.md)** - Automatic device discovery
-- **[CLI and Monitoring](features/cli-and-monitoring.md)** - Command-line tools and monitoring
-- **[Media Processing](features/media-processing.md)** - Video/audio transcoding and streaming
-- **[Real-time Sync](features/realtime-sync.md)** - File synchronization system
-- **[Sharing System](features/sharing-system.md)** - File sharing and collaboration
+- **[Auto Photo Backup](features/AUTO_PHOTO_BACKUP.md)** - Automatic mobile photo backup
+- **[File Pipeline Rules](features/FILE_PIPELINE_RULES.md)** - Automated file processing
+- **[Folder Sync Protocol](features/FOLDER_SYNC_PROTOCOL.md)** - Dropbox-style sync
+- **[Health Monitor](features/HEALTH_MONITOR.md)** - Self-healing system checks
+- **[Network Mode Switcher](features/NETWORK_MODE_SWITCHER.md)** - WiFi hotspot/client modes
+- **[Storage Analytics](features/STORAGE_ANALYTICS.md)** - Usage insights
+- **[Webhooks](features/WEBHOOKS.md)** - Automation and integrations
+- **[Zero-Config Discovery](features/ZERO_CONFIG_DISCOVERY.md)** - Automatic device discovery
 
-### 🚀 [Deployment](deployment/)
-Installation and deployment guides:
-- **[Installation Guide](deployment/install.md)** - Complete installation instructions
-- **[Demo Script](deployment/demo-script.md)** - Demo presentation guide
+### Testing (`testing/`)
 
-### 🧪 [Testing](testing/)
-Testing documentation and procedures:
-- **[Test Suite Summary](testing/test-suite-summary.md)** - Overview of all tests
-- **[PWA Test Checklist](testing/pwa-test-checklist.md)** - PWA testing procedures
-- **[Mobile PWA Tests](testing/pwa-mobile-test-checklist.md)** - Mobile-specific testing
-- **[Testing Guide](testing/testing.md)** - General testing guidelines
+Test guides and documentation:
 
-### 📈 [Completion Summaries](completion-summaries/)
-Feature completion reports and project milestones:
-- **[Authentication System](completion-summaries/authentication-system.md)**
-- **[PWA Implementation](completion-summaries/pwa-implementation.md)**
-- **[Mobile PWA](completion-summaries/mobile-pwa.md)**
-- **[Client Distribution](completion-summaries/client-distribution.md)**
-- **[Linux Client](completion-summaries/linux-client.md)**
-- **[Advanced Search](completion-summaries/advanced-search.md)**
-- **[Developer API](completion-summaries/developer-api.md)**
-- **[Webhook System](completion-summaries/webhook-system.md)**
-- **[QoS Bandwidth](completion-summaries/qos-bandwidth.md)**
-- **[OTA Update System](completion-summaries/ota-update-system.md)**
-- **[Hardware Interface](completion-summaries/hardware-interface.md)**
-- **[Hardware Optimization](completion-summaries/hardware-optimization.md)**
-- **[Power Management](completion-summaries/power-management.md)**
-- **[SDK](completion-summaries/sdk.md)**
-- **[Distribution System](completion-summaries/distribution-system.md)**
-- **[Landing Page](completion-summaries/landing-page.md)**
-- **[Production Deployment](completion-summaries/production-deployment.md)**
+- **[E2E Feature Tests](testing/E2E_FEATURE_TESTS.md)** - End-to-end test guide
+- **[Testing Guide](testing/TESTING.md)** - Comprehensive testing documentation
 
-### 📢 [Marketing](marketing/)
-Marketing materials and press resources:
-- **[Press Kit](marketing/press-kit.md)** - Media resources and information
+### Setup (`setup/`)
 
-### 🌐 [Website](website/)
-Project website files:
-- **[index.html](website/index.html)** - Main project website
+Production deployment guides:
 
-## 🎯 Quick Navigation
+- **[Performance Hardening](setup/PERFORMANCE_HARDENING.md)** - Optimization guide
+- **[Production Hardening Summary](setup/PRODUCTION_HARDENING_SUMMARY.md)** - Security checklist
+- **[Production Verification](setup/PRODUCTION_HARDENING_VERIFICATION.md)** - Deployment verification
 
-### For Users
-- **Getting Started**: [Installation Guide](deployment/install.md)
-- **Feature Overview**: [Features Directory](features/)
-- **Troubleshooting**: [Testing Guide](testing/testing.md)
+## 🚀 Quick Links
 
-### For Developers
-- **Architecture**: [Architecture Directory](architecture/)
-- **API Documentation**: [Developer API](completion-summaries/developer-api.md)
-- **Testing**: [Testing Directory](testing/)
-- **Contributing**: [Project Root CONTRIBUTING.md](../CONTRIBUTING.md)
+### Getting Started
 
-### For Contributors
-- **Project Structure**: [PROJECT_STRUCTURE.md](../PROJECT_STRUCTURE.md)
-- **Completion Status**: [Completion Summaries](completion-summaries/)
-- **Testing Procedures**: [Testing Directory](testing/)
+1. [Setup Scripts](../scripts/) - Installation and configuration
+2. [Verification Tests](../scripts/verify/) - Test your installation
+3. [Backend Code](../backend/src/) - Source code
 
-## 📝 Documentation Standards
+### Common Tasks
 
-### Writing Guidelines
-- Use clear, concise language
-- Include code examples where appropriate
-- Add screenshots for UI features
-- Keep documentation up-to-date with code changes
-- Use consistent formatting and structure
+- **Run Tests**: `bash scripts/verify/run-all-tests.sh`
+- **Create Admin**: `bash scripts/05-create-admin.sh`
+- **Check Health**: `curl http://localhost:3000/api/health`
+- **View Logs**: `tail -f /mnt/pocketcloud/logs/app-*.log`
 
-### File Organization
-- Use descriptive filenames
-- Group related documentation together
-- Include README files in subdirectories
-- Cross-reference related documents
-- Maintain a logical hierarchy
+### API Documentation
 
-### Markdown Standards
-- Use proper heading hierarchy (H1 → H2 → H3)
-- Include table of contents for long documents
-- Use code blocks with language specification
-- Add alt text for images
-- Use consistent link formatting
+See individual feature docs for API endpoints and examples.
 
-## 🔄 Keeping Documentation Updated
+## 📊 Feature Matrix
 
-Documentation should be updated when:
-- New features are added
-- APIs change
-- Installation procedures change
-- Architecture evolves
-- User feedback indicates confusion
+| Feature | Status | Documentation |
+|---------|--------|---------------|
+| File Management | ✅ | Core functionality |
+| Folder Sync | ✅ | [Sync Protocol](features/FOLDER_SYNC_PROTOCOL.md) |
+| Auto Photo Backup | ✅ | [Photo Backup](features/AUTO_PHOTO_BACKUP.md) |
+| File Versioning | ✅ | Core functionality |
+| Deduplication | ✅ | Core functionality |
+| Full-Text Search | ✅ | Core functionality |
+| Share Links | ✅ | Core functionality |
+| WebDAV | ✅ | Core functionality |
+| Encryption | ✅ | Core functionality |
+| Webhooks | ✅ | [Webhooks](features/WEBHOOKS.md) |
+| Pipeline Rules | ✅ | [Pipeline](features/FILE_PIPELINE_RULES.md) |
+| Storage Analytics | ✅ | [Analytics](features/STORAGE_ANALYTICS.md) |
+| Health Monitoring | ✅ | [Health](features/HEALTH_MONITOR.md) |
+| Network Modes | ✅ | [Network](features/NETWORK_MODE_SWITCHER.md) |
+| Zero-Config Discovery | ✅ | [Discovery](features/ZERO_CONFIG_DISCOVERY.md) |
 
-## 🤝 Contributing to Documentation
+## 🔧 Development
 
-We welcome documentation contributions! See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines.
+### Running Tests
 
-### Types of Documentation Contributions
-- Fix typos and grammar
-- Improve clarity and examples
-- Add missing documentation
-- Update outdated information
-- Translate documentation
-- Add tutorials and guides
+```bash
+# Unit tests
+cd backend && npm test
 
-### Documentation Review Process
-1. Create a pull request with your changes
-2. Maintainers review for accuracy and clarity
-3. Incorporate feedback
-4. Documentation is merged and published
+# Feature tests (requires running backend)
+ADMIN_USER=admin ADMIN_PASS=pass bash scripts/verify/04-feature-tests.sh
 
-## 📞 Getting Help
+# All tests
+ADMIN_USER=admin ADMIN_PASS=pass bash scripts/verify/run-all-tests.sh
+```
 
-- **Questions about documentation**: [GitHub Discussions](https://github.com/pocketcloud/pocketcloud/discussions)
-- **Documentation issues**: [GitHub Issues](https://github.com/pocketcloud/pocketcloud/issues)
-- **Real-time help**: [Discord](https://discord.gg/pocketcloud)
+### Code Structure
 
----
+```
+backend/src/
+├── routes/        # API endpoints
+├── services/      # Business logic
+├── middleware/    # Express middleware
+├── db/           # Database & migrations
+├── utils/        # Utilities
+└── tests/        # Unit tests
+```
 
-**Thank you for helping make PocketCloud documentation better!** 📚
+## 📝 Contributing
+
+When adding new features:
+
+1. Create feature documentation in `docs/features/`
+2. Add tests in `backend/src/tests/`
+3. Update this README
+4. Run verification suite
+
+## 🐛 Troubleshooting
+
+See [scripts/verify/TROUBLESHOOTING.md](../scripts/verify/TROUBLESHOOTING.md) for common issues and fixes.
+
+## 📞 Support
+
+- Check documentation in this folder
+- Review troubleshooting guide
+- Check logs: `/mnt/pocketcloud/logs/`
+- Run smoke test: `bash scripts/verify/01-smoke-test.sh`
